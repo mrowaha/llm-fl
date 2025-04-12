@@ -1,0 +1,9 @@
+> from .generic import Generic, ShellConfiguration
+  
+  
+> class Powershell(Generic):
+>     def app_alias(self, alias_name):
+  
+>     def and_(self, *commands):
+  
+>     def how_to_configure(self):

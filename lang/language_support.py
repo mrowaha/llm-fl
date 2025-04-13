@@ -48,8 +48,6 @@ def get_executed_function_body(
         return None
 
     start_line, end_line = function_body[1]
-    print(start_line)
-    print(end_line)
 
     project_dir = dirs.get_project_bug_dir(project_name, bug_id, 'data')
     true_file_path = os.path.join(
@@ -136,3 +134,19 @@ def get_executed_class_method(
     if executed_body is not None:
         return (''.join(executed_body), (start_line, end_line))
     return None
+
+
+def extract_imports(
+    project_name: str, bug_id: int,
+    file_path: str
+):
+    project_dir = dirs.get_project_bug_dir(project_name, bug_id, 'data')
+    true_file_path = os.path.join(
+        str(project_dir.absolute()), 'source', file_path)
+    with open(true_file_path, "r") as f:
+        source = f.read()
+
+    tree = ast.parse(source)
+    import_nodes = [node for node in tree.body if isinstance(
+        node, (ast.Import, ast.ImportFrom))]
+    return '\n'.join(ast.unparse(node) for node in import_nodes)

@@ -1,0 +1,40 @@
+ import os
+ import shlex
+ import mmap
+ import re
+ try:
+     from shutil import get_terminal_size
+ import six
+ import pyte
+ from ..exceptions import ScriptNotInLog
+ from .. import const, logs
+ 
+ 
+ def _group_by_calls(log):
+ 
+ 
+ 
+ 
+ 
+ 
+ def _get_script_group_lines(grouped, script):
+ 
+ 
+ 
+ 
+ def _get_output_lines(script, log_file):
+ 
+ 
+ def _skip_old_lines(log_file):
+ 
+ 
+ def get_output(script):
+     """Reads script output from log.
+ 
+     :type script: str
+     :rtype: str | None
+ 
+     """
+ 
+ 
+ 

@@ -1,54 +1,37 @@
-from pathlib import Path
-from prompt_loader import PromptLoader
-from fl_agents import TestReasonerAgent, LanguageSupportAgent
 import asyncio
-from functools import partial
-from key_store import s, static_keys
-from dirs import get_project_bug_dir
+from openai.types.responses.response_input_item_param import Message
+from agents import Runner
+from fl_agents.test_reasoner import test_reasoner_agent
+from fl_agents.hooks import fault_localization_run_hook
 
 
-class LLMFl():
-    def __init__(self):
-        self.prompt_loader = PromptLoader()
-        self.test_reasoner_agent = TestReasonerAgent()
-        self.language_support_agent = LanguageSupportAgent()
+async def main():
+    result = Runner.run_streamed(
+        input=[
+            Message(
+                role="user",
+                type="message",
+                content=[
+                    {
+                        'text': 'begin by loading the failing test and reasoning why it fails',
+                        'type': 'input_text'
+                    }
+                ]
+            )
+        ],
+        starting_agent=test_reasoner_agent,
+        context={
+            "project_name": "thefuck",
+            "bug_id": 1,
+            "failing_test_file": "tests/rules/test_pip_unknown_command.py"
+        },
+        hooks=fault_localization_run_hook
+    )
 
-    async def reason_failing_test(self: "LLMFl", bug_id: int, project_name: str) -> None:
-        failing_test: str
-        with open(get_project_bug_dir(project_name, bug_id, 'data') / Path("failing_test.txt")) as failing_test_file:
-            failing_test = failing_test_file.read()
-        test_reasoning_prompt = self.prompt_loader.get_test_reasoning_prompt(
-            failing_test)
-
-        with open(get_project_bug_dir(project_name, bug_id, 'preprocessed') / Path("test_reasoning.txt"), "wb") as processed_file:
-            async for response_delta in self.test_reasoner_agent.stream_response(
-                test_reasoning_prompt,
-                bug_id=bug_id,
-                project=project_name
-            ):
-                processed_file.write(response_delta.encode(errors='ignore'))
-                processed_file.flush()
-
-        with open(get_project_bug_dir(project_name, bug_id, 'preprocessed') / Path("test_reasoning.txt"), "rb") as processed_file:
-            s.set(static_keys['test_reason'],
-                  processed_file.read())
-
-        print(bytes(s.get(static_keys['test_reason'])).decode(errors='ignore'))
-
-    async def language_support(self: "LLMFl", bug_id: int, project_name: str) -> None:
-        language_support_prompt = self.prompt_loader.get_language_support_prompt(
-            "function name is script_parts from file thefuck/types.py"
-        )
-
-        async for response_data in self.language_support_agent.get_support(project_name, bug_id, language_support_prompt):
-            print(response_data)
-
-    async def run(self, bug_id: int, project_name: str) -> None:
-        # await self.reason_failing_test(bug_id, project_name)
-        await self.language_support(bug_id, project_name)
-
-
+    async for event in result.stream_events():
+        pass
 if __name__ == "__main__":
-    llmFl = LLMFl()
-    llmFl_runner = partial(llmFl.run, 1, 'thefuck')
-    asyncio.run(llmFl_runner())
+    # llmFl = LLMFl()
+    # llmFl_runner = partial(llmFl.run, 1, 'thefuck')
+    # asyncio.run(llmFl_runner())
+    asyncio.run(main())

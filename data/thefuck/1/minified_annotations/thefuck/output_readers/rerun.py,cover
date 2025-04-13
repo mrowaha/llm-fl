@@ -1,0 +1,38 @@
+ import os
+ import shlex
+ from subprocess import Popen, PIPE, STDOUT
+ from psutil import AccessDenied, Process, TimeoutExpired
+ from .. import logs
+ from ..conf import settings
+ 
+ 
+ def _kill_process(proc):
+     """Tries to kill the process otherwise just logs a debug message, the
+     process will be killed when thefuck terminates.
+ 
+     :type proc: Process
+ 
+     """
+ 
+ 
+ def _wait_output(popen, is_slow):
+     """Returns `True` if we can get output of the command in the
+     `settings.wait_command` time.
+ 
+     Command will be killed if it wasn't finished in the time.
+ 
+     :type popen: Popen
+     :rtype: bool
+ 
+     """
+ 
+ 
+ def get_output(script, expanded):
+     """Runs the script and obtains stdin/stderr.
+ 
+     :type script: str
+     :type expanded: str
+     :rtype: str | None
+ 
+     """
+ 

@@ -1,0 +1,29 @@
+ import json
+ import os
+ import socket
+ try:
+     from shutil import get_terminal_size
+ import pyte
+ from .. import const, logs
+ 
+ 
+ def _get_socket_path():
+ 
+ 
+ def is_available():
+     """Returns `True` if shell logger socket available.
+ 
+     :rtype: book
+ 
+     """
+ 
+ 
+ 
+ def _get_last_n(n):
+ 
+ 
+ def _get_output_lines(output):
+ 
+ 
+ def get_output(script):
+     """Gets command output from shell logger."""

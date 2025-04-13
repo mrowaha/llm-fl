@@ -24,7 +24,7 @@ class Logger:
             self.logger.addHandler(console_handler)
 
             # can add file handler here if needed
-            # file_handler = logging.FileHandler('application.log')
+            # file_handler = logging.FileHandler('fault_localization.log')
             # file_handler.setFormatter(formatter)
             # self.logger.addHandler(file_handler)
 

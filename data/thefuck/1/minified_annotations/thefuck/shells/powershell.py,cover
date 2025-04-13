@@ -1,0 +1,16 @@
+ from subprocess import Popen, PIPE
+ from ..utils import DEVNULL
+ from .generic import Generic, ShellConfiguration
+ 
+ 
+ class Powershell(Generic):
+     friendly_name = 'PowerShell'
+ 
+     def app_alias(self, alias_name):
+ 
+     def and_(self, *commands):
+ 
+     def how_to_configure(self):
+ 
+     def _get_version(self):
+         """Returns the version of the current shell"""

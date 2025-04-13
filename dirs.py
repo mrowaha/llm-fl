@@ -17,3 +17,7 @@ def get_project_bug_dir(project_name: str, bug_id: int, type: Literal["data", "p
         raise NotADirectoryError
 
     return dir
+
+
+def get_minified_annotations_folder(project_name: str, bug_id: int) -> Path:
+    return data_dir / Path(project_name) / Path(str(bug_id)) / "minified_annotations"

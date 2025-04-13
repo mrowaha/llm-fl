@@ -64,7 +64,7 @@ def get_executed_function_body(
     return None
 
 
-def get_class_source(
+def get_class_body(
     project_name: str, bug_id: int,
     file_path: str, class_name: str
 ):
@@ -77,4 +77,62 @@ def get_class_source(
     for node in ast.walk(tree):
         if isinstance(node, ast.ClassDef) and node.name == class_name:
             return ast.get_source_segment(source, node)
+    return None
+
+
+def get_class_method(
+    project_name: str, bug_id: int,
+    file_path: str, class_name: str,
+    method_name: str
+) -> Tuple[str, Lines] | None:
+    project_dir = dirs.get_project_bug_dir(project_name, bug_id, 'data')
+    true_file_path = os.path.join(
+        str(project_dir.absolute()), 'source', file_path)
+    with open(true_file_path, "r") as f:
+        source = f.read()
+
+    tree = ast.parse(source, filename=true_file_path)
+
+    for node in ast.walk(tree):
+        if isinstance(node, ast.ClassDef) and node.name == class_name:
+            for child in node.body:
+                if isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef)) and child.name == method_name:
+                    # Determine the start line, including decorators
+                    if child.decorator_list:
+                        start_line = min(
+                            decorator.lineno for decorator in child.decorator_list)
+                    else:
+                        start_line = child.lineno
+
+                    source_lines = source.splitlines()
+                    method_lines = source_lines[start_line -
+                                                1: child.end_lineno]
+                    return ('\n'.join(method_lines), (start_line, child.end_lineno))
+
+    return None
+
+
+def get_executed_class_method(
+    project_name: str, bug_id: int,
+    file_path: str, class_name: str,
+    method_name: str
+) -> Optional[Tuple[str, Lines]]:
+    method = get_class_method(
+        project_name, bug_id, file_path, class_name, method_name)
+
+    if method is None:
+        return None
+
+    start_line, end_line = method[1]
+
+    project_dir = dirs.get_project_bug_dir(project_name, bug_id, 'data')
+    true_file_path = os.path.join(
+        str(project_dir.absolute()), 'annotation', file_path+',cover')
+
+    executed_body: Optional[list[str]] = None
+    with open(true_file_path, "r") as f:
+        lines = f.readlines()
+        executed_body = lines[start_line - 1:end_line]
+    if executed_body is not None:
+        return (''.join(executed_body), (start_line, end_line))
     return None

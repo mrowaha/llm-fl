@@ -1,6 +1,6 @@
 from pathlib import Path
 from prompt_loader import PromptLoader
-from fl_agents import TestReasonerAgent
+from fl_agents import TestReasonerAgent, LanguageSupportAgent
 import asyncio
 from functools import partial
 from key_store import s, static_keys
@@ -11,6 +11,7 @@ class LLMFl():
     def __init__(self):
         self.prompt_loader = PromptLoader()
         self.test_reasoner_agent = TestReasonerAgent()
+        self.language_support_agent = LanguageSupportAgent()
 
     async def reason_failing_test(self: "LLMFl", bug_id: int, project_name: str) -> None:
         failing_test: str
@@ -34,8 +35,17 @@ class LLMFl():
 
         print(bytes(s.get(static_keys['test_reason'])).decode(errors='ignore'))
 
+    async def language_support(self: "LLMFl", bug_id: int, project_name: str) -> None:
+        language_support_prompt = self.prompt_loader.get_language_support_prompt(
+            "function name is script_parts from file thefuck/types.py"
+        )
+
+        async for response_data in self.language_support_agent.get_support(project_name, bug_id, language_support_prompt):
+            print(response_data)
+
     async def run(self, bug_id: int, project_name: str) -> None:
-        await self.reason_failing_test(bug_id, project_name)
+        # await self.reason_failing_test(bug_id, project_name)
+        await self.language_support(bug_id, project_name)
 
 
 if __name__ == "__main__":

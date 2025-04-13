@@ -15,3 +15,12 @@ class PromptLoader():
 
       failing_test to examine: {failing_test}
     """
+
+    def get_language_support_prompt(self: "PromptLoader", query: str) -> str:
+        with open(self.prompts_root_dir / Path("language_support.txt")) as prompt_file:
+            language_support_prompt = prompt_file.read()
+        return f"""
+          {language_support_prompt}
+
+          query: {query}
+        """

@@ -2,12 +2,11 @@ from agents import Agent, Runner, OpenAIChatCompletionsModel, AsyncOpenAI
 from agents.tool import FunctionTool
 from agents.run_context import RunContextWrapper
 from openai.types.responses import ResponseTextDeltaEvent
-from lang.language_support import get_function_body, get_executed_function_body
+from lang.language_support import get_executed_function_body
 from log import Logger, PrefixedFormatter
 from typing import Optional, List
 import json
 language_support_model_id = 'qwen2.5:7b-instruct-8k'
-
 language_support_model = OpenAIChatCompletionsModel(
     model=language_support_model_id,
     openai_client=AsyncOpenAI(
@@ -17,22 +16,15 @@ language_support_model = OpenAIChatCompletionsModel(
 
 async def get_function_body_tool(run_context: RunContextWrapper, str_args) -> str:
     args = json.loads(str_args)
-    print(args)
-    function_body = get_function_body(
-        run_context.context['project_name'],
-        int(run_context.context['bug_id']),
-        args['file_path'],
-        args['function_name']
-    )
-
     executed_function_body = get_executed_function_body(
         run_context.context['project_name'],
         int(run_context.context['bug_id']),
         args['file_path'],
         args['function_name']
     )
-    print(executed_function_body)
-    return function_body
+    if executed_function_body is None:
+        return "the function/class definition does not exist"
+    return executed_function_body[0]
 
 language_support_tools: List[FunctionTool] = [
     FunctionTool(

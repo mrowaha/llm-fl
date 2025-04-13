@@ -6,8 +6,8 @@ import argparse
 from pathlib import Path
 import json
 coverage_report_suffix = "coverage-report.json"
-executed_lines_suffix = "executed-lines.txt"
-executed_files_suffix = "executed-files.txt"
+executed_lines_suffix = "executed-lines.json"
+executed_files_suffix = "executed-files.json"
 
 
 def get_executed_lines(project_name: str, bug_id: int) -> None:
@@ -18,10 +18,12 @@ def get_executed_lines(project_name: str, bug_id: int) -> None:
         data = json.load(f)
 
     with open(result_filepath, "w") as f:
+        files = {}
         for file, info in data.get("files", {}).items():
             executed = set(
                 range(1, info["summary"]["num_statements"] + 1)) - set(info["missing_lines"])
-            f.write(f"{file}: Executed lines -> {sorted(executed)}\n")
+            files[file] = sorted(executed)
+        json.dump(files, f)
 
 
 def get_executed_files(project_name: str, bug_id: int) -> None:
@@ -32,8 +34,10 @@ def get_executed_files(project_name: str, bug_id: int) -> None:
         data = json.load(f)
 
     with open(result_filepath, "w") as f:
+        files = []
         for file, info in data.get("files", {}).items():
-            f.write(f"{file}\n")
+            files.append(file)
+        json.dump(files, f)
 
 
 if __name__ == '__main__':

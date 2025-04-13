@@ -1,6 +1,7 @@
 import os
 import argparse
 
+
 def process_annotation_folder(folder_path):
     for root, dirs, files in os.walk(folder_path, topdown=False):
         for file_name in files:
@@ -22,7 +23,8 @@ def process_annotation_folder(folder_path):
 
             if first_char == '>':
                 # Filter out lines starting with '!'
-                new_lines = [line for line in lines if not line.startswith('!')]
+                new_lines = [
+                    line[1:].lstrip() for line in lines if not line.startswith('!')]
 
                 if new_lines:
                     with open(file_path, 'w') as f:
@@ -43,8 +45,10 @@ def process_annotation_folder(folder_path):
                 os.rmdir(dir_path)
                 print(f"Removed empty directory: {dir_path}")
 
+
 def main():
-    parser = argparse.ArgumentParser(description="Clean and filter files in an annotation folder.")
+    parser = argparse.ArgumentParser(
+        description="Clean and filter files in an annotation folder.")
     parser.add_argument("folder", help="Path to the annotation folder")
     args = parser.parse_args()
 
@@ -53,6 +57,7 @@ def main():
         return
 
     process_annotation_folder(args.folder)
+
 
 if __name__ == "__main__":
     main()

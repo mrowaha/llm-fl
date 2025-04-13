@@ -1,6 +1,29 @@
 import os
 import argparse
 
+def delete_empty_folders(folder_path):
+    for root, dirs, files in os.walk(folder_path, topdown=False):
+        for file_name in files:
+            file_path = os.path.join(root, file_name)
+
+            # Skip non-regular files
+            if not os.path.isfile(file_path):
+                continue
+
+            with open(file_path, 'r') as f:
+                lines = f.readlines()
+
+            if not lines:
+                os.remove(file_path)
+                print(f"Removed empty file: {file_path}")
+                continue
+            
+        for dir_name in dirs:
+            dir_path = os.path.join(root, dir_name)
+            if not os.listdir(dir_path):
+                os.rmdir(dir_path)
+                print(f"Removed empty directory: {dir_path}")
+
 def process_annotation_folder(folder_path):
     for root, dirs, files in os.walk(folder_path, topdown=False):
         for file_name in files:
@@ -52,7 +75,8 @@ def main():
         print(f"Error: '{args.folder}' is not a valid directory.")
         return
 
-    process_annotation_folder(args.folder)
+    delete_empty_folders(args.folder)
+    # process_annotation_folder(args.folder)
 
 if __name__ == "__main__":
     main()

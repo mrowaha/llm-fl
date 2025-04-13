@@ -19,7 +19,7 @@ async def tool__load_failing_test_file(run_context: RunContextWrapper, args) -> 
 
     file_content: str = ""
     with open(
-        os.path.join(str(minified_annotations_dir), failing_test_file)
+        os.path.join(str(minified_annotations_dir), failing_test_file+',cover')
     ) as f:
         file_content = f.read()
 
@@ -48,7 +48,7 @@ async def tool__load_executed_files(run_context: RunContextWrapper, args) -> str
     """
 
 
-fault_localizer_model_id = 'qwen2.5:7b-instruct-8k'
+fault_localizer_model_id = 'qwen2.5-coder:7b'
 fault_localizer_model = OpenAIChatCompletionsModel(
     model=fault_localizer_model_id,
     openai_client=AsyncOpenAI(
@@ -67,9 +67,9 @@ fault_localizer_agent = Agent(
     test provided to you. You should do the following:
     1. Load the failing test content from the tool available to you
     2. Load the executed files from the tool available to you
-    3. Trace the code by making meaningful searches for functions or class methods recursively
-    4. You cannot finish until you make a guess about why the test was failing
-    Your tracing searches should only be limited to the executed files
+    3. Starting from the failing file, trace the execution by using function/class method explanations as needed
+    4. Forward function/class method explanation requests to respective agents
+    4. You can only trace the files within the executed files. 
     """,
     handoff_description="""
     Will take the failing test and begin fault localizing

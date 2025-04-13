@@ -3,6 +3,7 @@ from agents import Agent, OpenAIChatCompletionsModel, AsyncOpenAI
 from agents.tool import FunctionTool
 from agents.run_context import RunContextWrapper
 from lang.language_support import get_executed_function_body, get_executed_class_method
+from fl_agents.hooks.language_support import language_support_agent_hook
 language_support_model_id = 'qwen2.5-coder:7b'
 language_support_model = OpenAIChatCompletionsModel(
     model=language_support_model_id,
@@ -21,7 +22,11 @@ async def tool__get_function_body(run_context: RunContextWrapper, str_args) -> s
     )
     if executed_function_body is None:
         return "the function definition does not exist"
-    return executed_function_body[0]
+    return f"""
+<function_body_with_coverage>
+{executed_function_body[0]}
+</function_body_with_coverage>
+"""
 
 
 async def tool__get_class_method_body(run_context: RunContextWrapper, str_args) -> str:
@@ -50,10 +55,10 @@ function_explanation_tool = FunctionTool(
             "function_name": {
                     "type": "string",
                     "description": "the name of the function that we need the function body for"
-            }
+                    }
         }
     },
-    on_invoke_tool=tool__get_function_body
+    on_invoke_tool=tool__get_function_body,
 )
 
 class_method_explanation_tool = FunctionTool(
@@ -69,11 +74,11 @@ class_method_explanation_tool = FunctionTool(
             "method_name": {
                     "type": "string",
                     "description": "the name of the class method that we need the body for"
-            },
+                    },
             "class_name": {
                     "type": "string",
                     "description": "the name of the class that has the method"
-            }
+                    }
         }
     },
     on_invoke_tool=tool__get_class_method_body
@@ -86,7 +91,16 @@ function_explanation_agent = Agent(
     will take a query for a function name and return a detailed explanation
     of the function and its execution in the failing test
     """,
-    tools=[function_explanation_tool]
+    instructions="""
+You are python code reviewer. You will get a query about a coverage of a python function.
+'>' indicates the line was executed, and '!' indicates the line was not executed.
+You must use tools at your disposal to get the corresponding coverage of a function.
+In your answer, append exactly what you fetched. You are not allowed to edit the tool response. 
+Then use these '>' and '!' to explain the execution of the statements of the function. 
+Do not give any further advise. Keep your answer precise
+""",
+    tools=[function_explanation_tool],
+    hooks=language_support_agent_hook
 )
 
 class_method_explanation_agent = Agent(
@@ -96,5 +110,6 @@ class_method_explanation_agent = Agent(
     will take a query for a class name and its class method and returns a detailed
     explanation of the class method and its execution in the failing test
     """,
-    tools=[class_method_explanation_tool]
+    tools=[class_method_explanation_tool],
+    hooks=language_support_agent_hook
 )

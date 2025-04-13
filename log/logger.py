@@ -52,7 +52,7 @@ class Logger:
             file_handler = logging.FileHandler(file_path)
             file_handler.setFormatter(formatter)
             self.logger.addHandler(file_handler)
-
+        self.logger.disabled = True
         return self
 
     def get_logger(self) -> logging.Logger:

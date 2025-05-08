@@ -1,12 +1,3 @@
-============================= test session starts ==============================
-platform linux -- Python 3.8.20, pytest-5.4.2, py-1.8.1, pluggy-0.13.1
-benchmark: 3.2.3 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
-rootdir: /home/rowaha/work/llm-fl/BugsInPy/framework/bin/temp/thefuck
-plugins: mock-3.1.0, docker-pexpect-0.9, benchmark-3.2.3
-collected 1 item
-
-tests/rules/test_pip_unknown_command.py F                                [100%]
-
 =================================== FAILURES ===================================
 _ test_get_new_command[pip un+install thefuck-un+install-uninstall-pip uninstall thefuck] _
 

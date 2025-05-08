@@ -25,6 +25,13 @@ async def tool__get_function_body(run_context: RunContextWrapper, str_args) -> s
     return f"""
 <function_body_with_coverage>
 {executed_function_body[0]}
+
+<analysis>
+- if the line begins with > then it was executed
+- if the lines begins with ! then it was not executed
+- if all the lines in the function begin with !, this funciton was never executed so ignore it
+</analysis>
+
 </function_body_with_coverage>
 """
 
@@ -82,7 +89,7 @@ class_method_explanation_tool = FunctionTool(
         }
     },
     on_invoke_tool=tool__get_class_method_body
-),
+)
 
 function_explanation_agent = Agent(
     name="Function Explanation Agent",
@@ -106,6 +113,14 @@ Do not give any further advise. Keep your answer precise
 class_method_explanation_agent = Agent(
     name="Class Method Explanation Agent",
     model=language_support_model,
+    instructions="""
+    You are python code reviewer. You will get a query about a coverage of a python class.
+    '>' indicates the line was executed, and '!' indicates the line was not executed.
+    You must use tools at your disposal to get the corresponding coverage of a class.
+    In your answer, append exactly what you fetched. You are not allowed to edit the tool response. 
+    Then use these '>' and '!' to explain the execution of the statements of the class. 
+    Do not give any further advise. Keep your answer precise
+    """,
     handoff_description="""
     will take a query for a class name and its class method and returns a detailed
     explanation of the class method and its execution in the failing test

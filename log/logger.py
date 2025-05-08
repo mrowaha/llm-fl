@@ -4,7 +4,6 @@ from typing import Optional
 
 
 class Logger:
-    _instance = None
 
     def __init__(self, logger_name: str):
         self._initialize_logger(logger_name)
@@ -32,7 +31,9 @@ class Logger:
                   *,
                   level: int = logging.DEBUG,
                   logging_formatter: Optional[logging.Formatter] = None,
-                  file_path: Optional[str] = None) -> "Logger":
+                  file_path: Optional[str] = None,
+                  stdout: bool = True,
+                  ) -> "Logger":
         self.logger.setLevel(level)
         formatter = logging_formatter or logging.Formatter(
             '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -43,16 +44,16 @@ class Logger:
             self.logger.removeHandler(handler)
 
         # Add console handler
-        console_handler = logging.StreamHandler(sys.stdout)
-        console_handler.setFormatter(formatter)
-        self.logger.addHandler(console_handler)
+        if stdout:
+            console_handler = logging.StreamHandler(sys.stdout)
+            console_handler.setFormatter(formatter)
+            self.logger.addHandler(console_handler)
 
         # Add file handler if path provided
         if file_path:
             file_handler = logging.FileHandler(file_path)
             file_handler.setFormatter(formatter)
             self.logger.addHandler(file_handler)
-        self.logger.disabled = True
         return self
 
     def get_logger(self) -> logging.Logger:

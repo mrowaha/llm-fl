@@ -1,10 +1,17 @@
+import sys
 from agents.lifecycle import AgentHooks
 from log import Logger as FlLogger, PrefixedFormatter
+from dirs import get_project_bug_dir
+project = sys.argv[1]
+bug = int(sys.argv[2])
 
-_logger = FlLogger("fault localizer agent").configure(
+_logger = FlLogger("fl.FaultLocalizerAgent").configure(
+    stdout=False,
     logging_formatter=PrefixedFormatter(
-        '[Agent: Fault Localizer]'
-    )
+        '[agent]'
+    ),
+    file_path=get_project_bug_dir(
+        project, bug, 'data') / "fl-agent.log"
 ).get_logger()
 
 

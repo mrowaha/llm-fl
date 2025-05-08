@@ -1,1 +1,1 @@
-from .fault_localization_run import fault_localization_run_hook
+from .base_agent import get_fault_localizer_hooks, get_coverage_analyzer_hooks

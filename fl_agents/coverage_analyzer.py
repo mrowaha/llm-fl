@@ -1,16 +1,17 @@
 from agents import Agent
-from fl_agents.hooks.base_agent import base_agent_hook
-# from models import deepseek_chat_model as coverage_analyzer_model
-# from models import qwen_code_model as fault_localizer_model
-from models import qwen_base_model as coverage_analyzer_model
+from fl_agents.hooks.base_agent import get_coverage_analyzer_hooks
+from models import deepseek_chat_model as coverage_analyzer_model
+# from models import qwen_base_model as coverage_analyzer_model
 # from models import deepseek_r1_model as coverage_analyzer_model
-from prompts import analyze_coverage_prompt, system_prompt_editor
+from prompts import analyze_coverage_prompt, keep_definitions_prompt
 
 coverage_analyzer_agent = Agent(
     model=coverage_analyzer_model,
     name="Coverage Analyzer Agent",
     instructions=f"""
-    {analyze_coverage_prompt}
+    <your role>
+    {keep_definitions_prompt}
+    </your role>
     """.strip(),
-    hooks=base_agent_hook
+    hooks=get_coverage_analyzer_hooks()
 )

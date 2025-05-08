@@ -1,0 +1,15 @@
+ import re
+ from thefuck.shells import shell
+ from thefuck.specific.git import git_support
+ from thefuck.utils import eager
+ 
+ 
+ @git_support
+ def match(command):
+ 
+ 
+ @git_support
+ @eager
+ def get_new_command(command):
+     branch_name = re.findall(
+         r"fatal: A branch named '([^']*)' already exists.", command.output)[0]

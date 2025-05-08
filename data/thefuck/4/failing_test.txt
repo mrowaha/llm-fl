@@ -1,0 +1,54 @@
+========================================================================================== FAILURES ==========================================================================================
+_________________________________________________________________________________ TestFish.test_get_aliases __________________________________________________________________________________
+
+self = <tests.shells.test_fish.TestFish object at 0x7fe9e24b22b0>, shell = <thefuck.shells.fish.Fish object at 0x7fe9e23f12e0>
+
+    def test_get_aliases(self, shell):
+>       assert shell.get_aliases() == {'fish_config': 'fish_config',
+                                       'fuck': 'fuck',
+                                       'funced': 'funced',
+                                       'funcsave': 'funcsave',
+                                       'history': 'history',
+                                       'll': 'll',
+                                       'math': 'math',
+                                       'popd': 'popd',
+                                       'pushd': 'pushd',
+                                       'ruby': 'ruby',
+                                       'g': 'git',
+                                       'fish_key_reader': '/usr/bin/fish_key_reader',
+                                       'alias_with_equal_sign': 'echo'}
+
+self       = <tests.shells.test_fish.TestFish object at 0x7fe9e24b22b0>
+shell      = <thefuck.shells.fish.Fish object at 0x7fe9e23f12e0>
+
+tests/shells/test_fish.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+thefuck/shells/fish.py:60: in get_aliases
+    raw_aliases = _get_aliases(overridden)
+thefuck/utils.py:37: in wrapper
+    value = fn(*args, **kwargs)
+thefuck/utils.py:265: in wrapper
+    return fn(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+overridden = {'', 'cd', 'grep', 'ls', 'man', 'open'}
+
+    @cache('~/.config/fish/config.fish')
+    def _get_aliases(overridden):
+        aliases = {}
+        proc = Popen(['fish', '-ic', 'alias'], stdout=PIPE, stderr=DEVNULL)
+        alias_out = proc.stdout.read().decode('utf-8').strip().split('\n')
+        for alias in alias_out:
+>           name, value = alias.replace('alias ', '', 1).split(' ', 1)
+E           ValueError: not enough values to unpack (expected 2, got 1)
+
+alias      = 'alias alias_with_equal_sign=echo'
+alias_out  = ['alias fish_key_reader /usr/bin/fish_key_reader', 'alias g git', 'alias alias_with_equal_sign=echo', 'invalid_alias']
+aliases    = {'fish_key_reader': '/usr/bin/fish_key_reader', 'g': 'git'}
+name       = 'g'
+overridden = {'', 'cd', 'grep', 'ls', 'man', 'open'}
+proc       = <MagicMock name='Popen()' id='140642499827456'>
+value      = 'git'
+
+thefuck/shells/fish.py:25: ValueError
+================================================================================== 1 failed in 0.32 seconds ==================================================================================

@@ -1,0 +1,20 @@
+ import pytest
+ 
+ 
+ @pytest.fixture
+ def builtins_open(mocker):
+ 
+ 
+ @pytest.fixture
+ def isfile(mocker):
+     return mocker.patch('os.path.isfile', return_value=True)
+ 
+ 
+ @pytest.fixture
+ @pytest.mark.usefixtures('isfile')
+ def history_lines(mocker):
+ 
+ 
+ 
+ @pytest.fixture
+ def config_exists(mocker):

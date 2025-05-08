@@ -1,0 +1,18 @@
+========================================================================================== FAILURES ==========================================================================================
+_____________________________________________________________________________________ TestFish.test_info _____________________________________________________________________________________
+
+self = <tests.shells.test_fish.TestFish object at 0x7b51812fe850>, shell = <thefuck.shells.fish.Fish object at 0x7b518123c040>, Popen = <MagicMock name='Popen' id='135589989943232'>
+
+    def test_info(self, shell, Popen):
+        Popen.return_value.stdout.read.side_effect = [b'fish, version 3.5.9\n']
+>       assert shell.info() == 'Fish Shell 3.5.9'
+E       AssertionError: assert 'Fish Shell f...version 3.5.9' == 'Fish Shell 3.5.9'
+E         - Fish Shell fish, version 3.5.9
+E         + Fish Shell 3.5.9
+
+Popen      = <MagicMock name='Popen' id='135589989943232'>
+self       = <tests.shells.test_fish.TestFish object at 0x7b51812fe850>
+shell      = <thefuck.shells.fish.Fish object at 0x7b518123c040>
+
+tests/shells/test_fish.py:118: AssertionError
+================================================================================== 1 failed in 0.18 seconds ==================================================================================

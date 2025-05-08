@@ -1,0 +1,27 @@
+========================================================================================== FAILURES ==========================================================================================
+_ test_get_new_command[dnf saerch vim-No such command: saerch. Please use /usr/bin/dnf --help\nIt could be a DNF plugin command, try: "dnf install 'dnf-command(saerch)'"\n-dnf search vim] __
+
+set_help = <function set_help.<locals>._set_text at 0x7aa968543670>
+output = 'No such command: saerch. Please use /usr/bin/dnf --help\nIt could be a DNF plugin command, try: "dnf install \'dnf-command(saerch)\'"\n', script = 'dnf saerch vim'
+result = 'dnf search vim'
+
+    @pytest.mark.parametrize('script, output, result', [
+        # ('dnf isntall vim', invalid_command('isntall'),
+        #  'dnf install vim'),
+        ('dnf saerch vim', invalid_command('saerch'),
+         'dnf search vim'),
+    ])
+    def test_get_new_command(set_help, output, script, result):
+        set_help(help_text)
+>       assert result in get_new_command(Command(script, output))
+E       assert 'dnf search vim' in []
+E        +  where [] = get_new_command(Command(script=dnf saerch vim, output=No such command: saerch. Please use /usr/bin/dnf --help\nIt could be a DNF plugin command, try: "dnf install 'dnf-command(saerch)'"\n))
+E        +    where Command(script=dnf saerch vim, output=No such command: saerch. Please use /usr/bin/dnf --help\nIt could be a DNF plugin command, try: "dnf install 'dnf-command(saerch)'"\n) = Command('dnf saerch vim', 'No such command: saerch. Please use /usr/bin/dnf --help\nIt could be a DNF plugin command, try: "dnf install \'dnf-command(saerch)\'"\n')
+
+output     = 'No such command: saerch. Please use /usr/bin/dnf --help\nIt could be a DNF plugin command, try: "dnf install \'dnf-command(saerch)\'"\n'
+result     = 'dnf search vim'
+script     = 'dnf saerch vim'
+set_help   = <function set_help.<locals>._set_text at 0x7aa968543670>
+
+tests/rules/test_dnf_no_such_command.py:190: AssertionError
+================================================================================== 1 failed in 0.14 seconds ==================================================================================

@@ -1,0 +1,54 @@
+ from imp import load_source
+ import os
+ import sys
+ from warnings import warn
+ from six import text_type
+ from . import const
+ from .system import Path
+ 
+ 
+ class Settings(dict):
+     def __getattr__(self, item):
+ 
+     def __setattr__(self, key, value):
+         self[key] = value
+ 
+     def init(self, args=None):
+         """Fills `settings` with values from `settings.py` and env."""
+ 
+ 
+ 
+ 
+ 
+     def _init_settings_file(self):
+ 
+     def _get_user_dir_path(self):
+         """Returns Path object representing the user config resource"""
+ 
+         # For backward compatibility use legacy '~/.thefuck' if it exists:
+ 
+     def _setup_user_dir(self):
+         """Returns user config dir, create it when it doesn't exist."""
+ 
+ 
+     def _settings_from_file(self):
+         """Loads settings from file."""
+ 
+     def _rules_from_env(self, val):
+         """Transforms rules list from env-string to python."""
+ 
+     def _priority_from_env(self, val):
+         """Gets priority pairs from env."""
+ 
+     def _val_from_env(self, env, attr):
+         """Transforms env-strings to python."""
+ 
+     def _settings_from_env(self):
+         """Loads settings from env."""
+ 
+     def _settings_from_args(self, args):
+         """Loads settings from args."""
+ 
+ 
+ 
+ settings = Settings(const.DEFAULT_SETTINGS)

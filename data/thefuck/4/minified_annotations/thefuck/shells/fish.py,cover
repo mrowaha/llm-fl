@@ -1,0 +1,64 @@
+ from subprocess import Popen, PIPE
+ from time import time
+ import os
+ import sys
+ import six
+ from .. import logs
+ from ..conf import settings
+ from ..utils import DEVNULL, cache
+ from .generic import Generic
+ 
+ 
+ @cache('~/.config/fish/config.fish', '~/.config/fish/functions')
+ def _get_functions(overridden):
+     proc = Popen(['fish', '-ic', 'functions'], stdout=PIPE, stderr=DEVNULL)
+     functions = proc.stdout.read().decode('utf-8').strip().split('\n')
+     return {func: func for func in functions if func not in overridden}
+ 
+ 
+ @cache('~/.config/fish/config.fish')
+ def _get_aliases(overridden):
+     aliases = {}
+     proc = Popen(['fish', '-ic', 'alias'], stdout=PIPE, stderr=DEVNULL)
+     alias_out = proc.stdout.read().decode('utf-8').strip().split('\n')
+     for alias in alias_out:
+         name, value = alias.replace('alias ', '', 1).split(' ', 1)
+         if name not in overridden:
+             aliases[name] = value
+ 
+ 
+ class Fish(Generic):
+     def _get_overridden_aliases(self):
+         overridden = os.environ.get('THEFUCK_OVERRIDDEN_ALIASES',
+                                     os.environ.get('TF_OVERRIDDEN_ALIASES', ''))
+         default = {'cd', 'grep', 'ls', 'man', 'open'}
+         for alias in overridden.split(','):
+             default.add(alias.strip())
+         return default
+ 
+     def app_alias(self, alias_name):
+         # It is VERY important to have the variables declared WITHIN the alias
+ 
+     def get_aliases(self):
+         overridden = self._get_overridden_aliases()
+         functions = _get_functions(overridden)
+         raw_aliases = _get_aliases(overridden)
+ 
+     def _expand_aliases(self, command_script):
+ 
+     def _get_history_file_name(self):
+ 
+     def _get_history_line(self, command_script):
+ 
+     def _script_from_history(self, line):
+ 
+     def and_(self, *commands):
+ 
+     def or_(self, *commands):
+ 
+     def how_to_configure(self):
+ 
+     def put_to_history(self, command):
+ 
+     def _put_to_history(self, command_script):
+         """Puts command script to shell history."""

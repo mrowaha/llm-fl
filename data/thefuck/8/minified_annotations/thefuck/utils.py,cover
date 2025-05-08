@@ -1,0 +1,166 @@
+ import os
+ import pickle
+ import re
+ import shelve
+ import six
+ from contextlib import closing
+ from decorator import decorator
+ from difflib import get_close_matches
+ from functools import wraps
+ from .logs import warn
+ from .conf import settings
+ from .system import Path
+ 
+ DEVNULL = open(os.devnull, 'w')
+ 
+ if six.PY2:
+ else:
+     import dbm
+     shelve_open_error = dbm.error
+ 
+ 
+ def memoize(fn):
+     """Caches previous calls to the function."""
+     memo = {}
+ 
+     @wraps(fn)
+     def wrapper(*args, **kwargs):
+         if not memoize.disabled:
+             key = pickle.dumps((args, kwargs))
+             if key not in memo:
+                 memo[key] = fn(*args, **kwargs)
+             value = memo[key]
+             # Memoize is disabled, call the function
+ 
+         return value
+ 
+     return wrapper
+ 
+ 
+ memoize.disabled = False
+ 
+ 
+ @memoize
+ def which(program):
+     """Returns `program` path or `None`."""
+     try:
+         from shutil import which
+ 
+         return which(program)
+ 
+ 
+ 
+ 
+ def default_settings(params):
+     """Adds default values to settings if it not presented.
+ 
+     Usage:
+ 
+         @default_settings({'apt': '/usr/bin/apt'})
+         def match(command):
+             print(settings.apt)
+ 
+     """
+ 
+ 
+ def get_closest(word, possibilities, n=3, cutoff=0.6, fallback_to_first=True):
+     """Returns closest match or just first from possibilities."""
+ 
+ 
+ @memoize
+ def get_all_executables():
+ 
+ 
+ 
+ 
+ 
+ 
+ def replace_argument(script, from_, to):
+     """Replaces command line argument."""
+ 
+ 
+ @decorator
+ def eager(fn, *args, **kwargs):
+ 
+ 
+ @eager
+ def get_all_matched_commands(stderr, separator='Did you mean'):
+ 
+ 
+ def replace_command(command, broken, matched):
+     """Helper for *_no_command rules."""
+     new_cmds = get_close_matches(broken, matched, cutoff=0.1)
+     return [replace_argument(command.script, broken, new_cmd.strip())
+             for new_cmd in new_cmds]
+ 
+ 
+ @memoize
+ def is_app(command, *app_names, **kwargs):
+     """Returns `True` if command is call to one of passed app names."""
+ 
+ 
+ 
+ 
+ 
+ def for_app(*app_names, **kwargs):
+     """Specifies that matching script is for on of app names."""
+     def _for_app(fn, command):
+ 
+     return decorator(_for_app)
+ 
+ 
+ def get_cache_dir():
+ 
+     # Ensure the cache_path exists, Python 2 does not have the exist_ok
+     # parameter
+ 
+ 
+ 
+ def cache(*depends_on):
+     """Caches function result in temporary file.
+ 
+     Cache will be expired when modification date of files from `depends_on`
+     will be changed.
+ 
+     Function wrapped in `cache` should be arguments agnostic.
+ 
+     """
+     def _get_mtime(name):
+ 
+     @decorator
+     def _cache(fn, *args, **kwargs):
+ 
+         # A bit obscure, but simplest way to generate unique key for
+         # functions and methods in python 2 and 3:
+ 
+ 
+             # Caused when switching between Python versions
+ 
+ 
+     return _cache
+ 
+ 
+ cache.disabled = False
+ 
+ 
+ def get_installation_info():
+ 
+ 
+ 
+ def get_alias():
+ 
+ 
+ @memoize
+ def get_valid_history_without_current(command):
+ 
+ 
+ 
+ 
+ def format_raw_script(raw_script):
+     """Creates single script from a list of script parts.
+ 
+     :type raw_script: [basestring]
+     :rtype: basestring
+ 
+     """
+ 

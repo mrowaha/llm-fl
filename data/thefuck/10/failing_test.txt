@@ -1,0 +1,16 @@
+========================================================================================== FAILURES ==========================================================================================
+____________________________________________________________________________________ test_get_operations _____________________________________________________________________________________
+
+set_help = <function set_help.<locals>._set_text at 0x74d548d974c0>
+
+    def test_get_operations(set_help):
+        set_help(help_text)
+>       assert _get_operations() == dnf_operations
+E       AssertionError: assert [b'autoremove...ro-sync', ...] == ['autoremove',...ro-sync', ...]
+E         At index 0 diff: b'autoremove' != 'autoremove'
+E         Use -v to get the full diff
+
+set_help   = <function set_help.<locals>._set_text at 0x74d548d974c0>
+
+tests/rules/test_dnf_no_such_command.py:179: AssertionError
+================================================================================== 1 failed in 0.12 seconds ==================================================================================

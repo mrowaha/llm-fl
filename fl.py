@@ -1,23 +1,33 @@
 import sys
 import os
+
+if len(sys.argv) != 3:
+    print('please specify the project name and the bug id')
+    os._exit(1)
+
 import asyncio
 import json
 from openai.types.responses.response_input_item_param import Message
 from agents import Runner, ItemHelpers
 from fl_agents.fault_localizer import fault_localizer_agent
 from fl_agents.hooks import fault_localization_run_hook
+from fl_agents.coverage_analyzer import coverage_analyzer_agent
 from openai.types.responses import ResponseTextDeltaEvent
 from dirs import get_project_bug_dir
-from prompts import system_prompt
+from prompts import system_prompt_fl, system_prompt_editor
+from log import Logger as RunLogger, NoNewlineFormatter
+
+
+project = sys.argv[1]
+bug = int(sys.argv[2])
+_logger = RunLogger("fl.Run").configure(
+    logging_formatter=NoNewlineFormatter()
+).get_logger()
 
 
 async def main():
-    if len(sys.argv) != 3:
-        print('please specify the project name and the bug id')
-        os._exit(1)
+    global project, bug
 
-    project = sys.argv[1]
-    bug = int(sys.argv[2])
     project_dir = get_project_bug_dir(
         project_name=project, bug_id=bug, type='data')
 
@@ -39,23 +49,26 @@ async def main():
     </project_executed_files>
     """.strip()
 
-    fl_prompt = f"""
-    {failing_test_prompt}
+    # fl_prompt = f"""
+    # {failing_test_prompt}
 
-    {executed_lines_prompt}
-    """
+    # {executed_lines_prompt}
+    # """
+
+    fl_prompt = "I need you to explain me the file contents of thefuck/output_readers/shell_logger.py"
+
     result = Runner.run_streamed(
         input=[
-            Message(
-                role="system",
-                type="message",
-                content=[
-                    {
-                        'text': system_prompt,
-                        'type': 'input_text'
-                    }
-                ]
-            ),
+            # Message(
+            #     role="system",
+            #     type="message",
+            #     content=[
+            #         {
+            #             'text': system_prompt_fl,
+            #             'type': 'input_text'
+            #         }
+            #     ]
+            # ),
             Message(
                 role="user",
                 type="message",
@@ -76,27 +89,25 @@ async def main():
     )
 
     with open(get_project_bug_dir(project, bug, 'data') / 'fl-run.txt', 'w') as f:
-        print("=== Run starting ===")
-        print("=== Run staring ===", file=f)
+        print("=== Run starting ===\n\n")
+
         async for event in result.stream_events():
-            if event.type == "raw_response_event" and isinstance(event.data, ResponseTextDeltaEvent):
-                print(event.data.delta, end="", flush=True)
-                print(event.data.delta, end="", file=f)
-            elif event.type == "run_item_stream_event":
-                if event.item.type == "tool_call_item":
-                    tool_call = event.item.raw_item
-                    if tool_call.type == 'function_call':
-                        tool_name = tool_call.name
-                        tool_args = tool_call.arguments
-                        print(f"\n-- Tool was called: {tool_name}")
-                        print(f"-- Tool arguments: {tool_args}")
-                        print(f"-- Tool was called: {tool_name}", file=f)
-                        print(f"-- Tool arguments: {tool_args}", file=f)
-                elif event.item.type == "tool_call_output_item":
-                    print(f"-- Tool output: {event.item.output}")
-                    print(f"-- Tool output: {event.item.output}", file=f)
-        print("=== Run complete ===")
-        print("=== Run complete ===", file=f)
+            pass
+            # if event.type == "raw_response_event" and isinstance(event.data, ResponseTextDeltaEvent):
+            #     print(event.data.delta, end="", flush=True)
+            # elif event.type == "agent_updated_stream_event":
+            #     print(f"Agent updated: {event.new_agent.name}")
+            # elif event.type == "run_item_stream_event":
+            #     if event.item.type == "tool_call_item":
+            #         tool_call = event.item.raw_item
+            #         if tool_call.type == 'function_call':
+            #             tool_name = tool_call.name
+            #             tool_args = tool_call.arguments
+            #             print(
+            #                 f"\n-- Tool called: {tool_name}, args: {tool_args}")
+            #     elif event.item.type == "tool_call_output_item":
+            #         print(f"-- Tool output: {event.item.output}")
+        print("\n\n=== Run complete ===")
 
 if __name__ == "__main__":
     asyncio.run(main())

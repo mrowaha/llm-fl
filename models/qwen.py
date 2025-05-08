@@ -5,3 +5,10 @@ qwen_code_model = OpenAIChatCompletionsModel(
     openai_client=AsyncOpenAI(
         base_url="http://localhost:11434/v1", api_key="ollama")
 )
+
+qwen_base_model_id = 'qwen3:8b'
+qwen_base_model = OpenAIChatCompletionsModel(
+    model=qwen_base_model_id,
+    openai_client=AsyncOpenAI(
+        base_url="http://localhost:11434/v1", api_key="ollama")
+)

@@ -13,13 +13,13 @@ class Logger:
         self.logger.setLevel(logging.DEBUG)
 
         if not self.logger.handlers:
-            formatter = logging.Formatter(
-                '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-            )
+            # formatter = logging.Formatter(
+            #     '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+            # )
+            # console_handler.setFormatter(formatter)
 
             # Console handler
             console_handler = logging.StreamHandler(sys.stdout)
-            console_handler.setFormatter(formatter)
             self.logger.addHandler(console_handler)
 
             # can add file handler here if needed
@@ -35,9 +35,6 @@ class Logger:
                   stdout: bool = True,
                   ) -> "Logger":
         self.logger.setLevel(level)
-        formatter = logging_formatter or logging.Formatter(
-            '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-        )
 
         # Clear existing handlers
         for handler in self.logger.handlers[:]:
@@ -46,13 +43,13 @@ class Logger:
         # Add console handler
         if stdout:
             console_handler = logging.StreamHandler(sys.stdout)
-            console_handler.setFormatter(formatter)
+            if logging_formatter:
+                console_handler.setFormatter(logging_formatter)
             self.logger.addHandler(console_handler)
 
         # Add file handler if path provided
         if file_path:
             file_handler = logging.FileHandler(file_path)
-            file_handler.setFormatter(formatter)
             self.logger.addHandler(file_handler)
         return self
 

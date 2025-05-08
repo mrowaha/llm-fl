@@ -2,7 +2,7 @@ from agents.lifecycle import RunHooks
 from log import Logger as FlLogger, PrefixedFormatter
 _logger = FlLogger("fl.LocalizationRun").configure(
     logging_formatter=PrefixedFormatter(
-        '[run]'
+        '[run]',
     )).get_logger()
 
 

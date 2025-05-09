@@ -78,7 +78,7 @@ file_content_tool = FunctionTool(
                         "items": {
                             "type": "string"
                         },
-                        "description": "a list of definitions that you intend to view in the script"
+                        "description": "a list of definitions that you intend to view in the script. definitions can strictly be the constructs that you want (e.g. variables, functions, class, class method)"
                     }
                 },
     },

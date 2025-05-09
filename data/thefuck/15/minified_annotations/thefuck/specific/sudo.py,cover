@@ -1,0 +1,9 @@
+ import six
+ from decorator import decorator
+ 
+ 
+ @decorator
+ def sudo_support(fn, command):
+     """Removes sudo before calling fn and adds it after."""
+ 
+ 

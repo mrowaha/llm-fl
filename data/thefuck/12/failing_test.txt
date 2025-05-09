@@ -1,0 +1,22 @@
+========================================================================================== FAILURES ==========================================================================================
+________________________________________________________________________ test_get_new_command[command0-new_command0] _________________________________________________________________________
+
+command = Command(script=man missing, stdout=, stderr=No manual entry for missing
+), new_command = ['missing --help']
+
+    @pytest.mark.parametrize('command, new_command', [
+        # (Command('man read'), ['man 3 read', 'man 2 read', 'read --help']),
+        (Command('man missing', stderr="No manual entry for missing\n"), ['missing --help']),
+    ])
+    def test_get_new_command(command, new_command):
+>       assert get_new_command(command) == new_command
+E       AssertionError: assert ['missing --h...an 2 missing'] == ['missing --help']
+E         Left contains more items, first extra item: 'man 3 missing'
+E         Use -v to get the full diff
+
+command    = Command(script=man missing, stdout=, stderr=No manual entry for missing
+)
+new_command = ['missing --help']
+
+tests/rules/test_man.py:30: AssertionError
+================================================================================== 1 failed in 0.16 seconds ==================================================================================

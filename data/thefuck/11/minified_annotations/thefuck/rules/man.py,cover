@@ -1,0 +1,24 @@
+ from thefuck.utils import for_app
+ 
+ 
+ @for_app('man', at_least=1)
+ def match(command):
+ 
+ 
+ def get_new_command(command):
+     if '3' in command.script:
+     if '2' in command.script:
+ 
+     split_cmd2 = command.script_parts
+     split_cmd3 = split_cmd2[:]
+ 
+     split_cmd2.insert(1, ' 2 ')
+     split_cmd3.insert(1, ' 3 ')
+ 
+     last_arg = command.script_parts[-1]
+ 
+     return [
+         last_arg + ' --help',
+         "".join(split_cmd3),
+         "".join(split_cmd2),
+     ]

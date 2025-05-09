@@ -1,0 +1,25 @@
+ import os
+ import sys
+ import tty
+ import termios
+ import colorama
+ from .. import const
+ 
+ init_output = colorama.init
+ 
+ 
+ def getch():
+ 
+ 
+ def get_key():
+ 
+ 
+ 
+ 
+ try:
+     from pathlib import Path
+ 
+ 
+ def _expanduser(self):
+ 
+ if not hasattr(Path, 'expanduser'):

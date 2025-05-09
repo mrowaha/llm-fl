@@ -1,0 +1,161 @@
+ from imp import load_source
+ from subprocess import Popen, PIPE
+ import os
+ import sys
+ import six
+ from psutil import Process, TimeoutExpired
+ from . import logs
+ from .shells import shell
+ from .conf import settings
+ from .const import DEFAULT_PRIORITY, ALL_ENABLED
+ from .exceptions import EmptyCommand
+ from .utils import compatibility_call
+ 
+ 
+ class Command(object):
+     """Command that should be fixed."""
+ 
+     def __init__(self, script, stdout, stderr):
+         """Initializes command with given values.
+ 
+         :type script: basestring
+         :type stdout: basestring
+         :type stderr: basestring
+ 
+         """
+ 
+     @property
+     def script_parts(self):
+ 
+     def __eq__(self, other):
+ 
+     def __repr__(self):
+ 
+     def update(self, **kwargs):
+         """Returns new command with replaced fields.
+ 
+         :rtype: Command
+ 
+         """
+ 
+     @staticmethod
+     def _wait_output(popen):
+         """Returns `True` if we can get output of the command in the
+         `settings.wait_command` time.
+ 
+         Command will be killed if it wasn't finished in the time.
+ 
+         :type popen: Popen
+         :rtype: bool
+ 
+         """
+ 
+     @staticmethod
+     def _prepare_script(raw_script):
+         """Creates single script from a list of script parts.
+ 
+         :type raw_script: [basestring]
+         :rtype: basestring
+ 
+         """
+ 
+ 
+     @classmethod
+     def from_raw_script(cls, raw_script):
+         """Creates instance of `Command` from a list of script parts.
+ 
+         :type raw_script: [basestring]
+         :rtype: Command
+         :raises: EmptyCommand
+ 
+         """
+ 
+ 
+ 
+ 
+ 
+ 
+ class Rule(object):
+     """Rule for fixing commands."""
+ 
+     def __init__(self, name, match, get_new_command,
+                  enabled_by_default, side_effect,
+                  priority, requires_output):
+         """Initializes rule with given fields.
+ 
+         :type name: basestring
+         :type match: (Command) -> bool
+         :type get_new_command: (Command) -> (basestring | [basestring])
+         :type enabled_by_default: boolean
+         :type side_effect: (Command, basestring) -> None
+         :type priority: int
+         :type requires_output: bool
+ 
+         """
+ 
+     def __eq__(self, other):
+ 
+     def __repr__(self):
+ 
+     @classmethod
+     def from_path(cls, path):
+         """Creates rule instance from path.
+ 
+         :type path: pathlib.Path
+         :rtype: Rule
+ 
+         """
+ 
+     @property
+     def is_enabled(self):
+         """Returns `True` when rule enabled.
+ 
+         :rtype: bool
+ 
+         """
+ 
+     def is_match(self, command):
+         """Returns `True` if rule matches the command.
+ 
+         :type command: Command
+         :rtype: bool
+ 
+         """
+ 
+ 
+ 
+     def get_corrected_commands(self, command):
+         """Returns generator with corrected commands.
+ 
+         :type command: Command
+         :rtype: Iterable[CorrectedCommand]
+ 
+         """
+ 
+ 
+ class CorrectedCommand(object):
+     """Corrected by rule command."""
+ 
+     def __init__(self, script, side_effect, priority):
+         """Initializes instance with given fields.
+ 
+         :type script: basestring
+         :type side_effect: (Command, basestring) -> None
+         :type priority: int
+ 
+         """
+ 
+     def __eq__(self, other):
+         """Ignores `priority` field."""
+ 
+     def __hash__(self):
+ 
+     def __repr__(self):
+ 
+     def run(self, old_cmd):
+         """Runs command from rule for passed command.
+ 
+         :type old_cmd: Command
+ 
+         """
+         # This depends on correct setting of PYTHONIOENCODING by the alias:

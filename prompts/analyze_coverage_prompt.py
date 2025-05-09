@@ -37,8 +37,8 @@ keep_definitions_prompt = """
 You will receive an incomplete python file and a list of definitions.
 As a text shortner, you will not attempt to fix the code but are restricted to following:
 <restrictions>
-- keep all import statements in the file that import any of the listed definitions
-- if the definitions are not imported (and are defined inside the script), keep those definitions
+- keep all import statements in the file regardless of the definitions
+- keep definitions asked for, regardless of their types (e.g. do not care if they are variables, functions, classes)
 - otherwise remove all other definitions
 </restrictions>
 

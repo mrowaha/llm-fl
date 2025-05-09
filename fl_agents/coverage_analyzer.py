@@ -4,6 +4,7 @@ from models import deepseek_chat_model as coverage_analyzer_model
 # from models import qwen_base_model as coverage_analyzer_model
 # from models import deepseek_r1_model as coverage_analyzer_model
 from prompts import analyze_coverage_prompt, keep_definitions_prompt
+from fl_agents.tools.files_support import file_import_stmts_tool
 
 coverage_analyzer_agent = Agent(
     model=coverage_analyzer_model,
@@ -13,5 +14,8 @@ coverage_analyzer_agent = Agent(
     {keep_definitions_prompt}
     </your role>
     """.strip(),
-    hooks=get_coverage_analyzer_hooks()
+    hooks=get_coverage_analyzer_hooks(),
+    tools=[
+        file_import_stmts_tool
+    ],
 )

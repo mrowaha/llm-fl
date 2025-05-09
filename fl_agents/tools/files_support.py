@@ -68,7 +68,7 @@ async def tool__get_file_imports(run_context: RunContextWrapper, str_args) -> st
     """
 file_import_stmts_tool = FunctionTool(
     name="get_file_import_statements",
-    description="for a given file path, will walk through the file and return all import and import from statements",
+    description="for a given file path, will walk through the file and return all import and import from statements. This tool will help you deduce a file path from import statements. if it does not, seeing the entire file content might help",
     params_json_schema={
                 "type": "object",
                 "properties": {

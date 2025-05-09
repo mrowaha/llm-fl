@@ -1,5 +1,6 @@
 import sys
 import logging
+from datetime import datetime, timezone
 from agents.lifecycle import AgentHooks
 from log import Logger as FlLogger, PrefixedFormatter
 from dirs import get_project_bug_dir
@@ -27,6 +28,7 @@ class BaseAgentHooks(AgentHooks):
 
 
 def get_fault_localizer_hooks() -> BaseAgentHooks:
+    now = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H-%MZ')
     base_agent_hook = BaseAgentHooks()
     _logger = FlLogger("fl.FaultLocalizerAgent").configure(
         stdout=False,
@@ -34,7 +36,7 @@ def get_fault_localizer_hooks() -> BaseAgentHooks:
             '\n[agent]'
         ),
         file_path=get_project_bug_dir(
-            project, bug, 'data') / "fl-agent.log"
+            project, bug, 'data') / f"fl-agent-{now}.log"
     ).get_logger()
 
     base_agent_hook.set_logger(_logger)
@@ -42,6 +44,7 @@ def get_fault_localizer_hooks() -> BaseAgentHooks:
 
 
 def get_coverage_analyzer_hooks() -> BaseAgentHooks:
+    now = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H-%MZ')
     base_agent_hook = BaseAgentHooks()
     _logger = FlLogger("fl.CoverageAnalyzerAgent").configure(
         stdout=False,
@@ -49,7 +52,7 @@ def get_coverage_analyzer_hooks() -> BaseAgentHooks:
             '\n[agent]'
         ),
         file_path=get_project_bug_dir(
-            project, bug, 'data') / "ca-agent.log"
+            project, bug, 'data') / f"ca-agent-{now}.log"
     ).get_logger()
     base_agent_hook.set_logger(_logger)
     return base_agent_hook

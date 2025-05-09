@@ -40,6 +40,7 @@ As a text shortner, you will not attempt to fix the code but are restricted to f
 - keep all import statements in the file regardless of the definitions
 - keep definitions asked for, regardless of their types (e.g. do not care if they are variables, functions, classes)
 - otherwise remove all other definitions
+- if any of the tool calls have <analysis> </analysis> tags, you must append the analysis tags in your response
 </restrictions>
 
 Wrap your answer inside <file_content> </file_content> tags

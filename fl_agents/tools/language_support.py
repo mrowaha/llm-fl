@@ -13,7 +13,7 @@ async def tool__get_function_body(run_context: RunContextWrapper, str_args) -> s
         args['function_name']
     )
     if executed_function_body is None:
-        return "the function definition does not exist"
+        return "the function definition does not exist in the file you provided"
     return f"""
 <function_body_with_coverage file_path={args['file_path']}>
 {executed_function_body[0]}
@@ -43,7 +43,7 @@ async def tool__get_class_method_body(run_context: RunContextWrapper, str_args) 
 
 function_explanation_tool = FunctionTool(
     name="get_function_body_tool",
-    description="returns a function body for a given function name and file path",
+    description="returns a function body for a given function name and file path. Use this tool if you are concerned about a single function definition",
     params_json_schema={
         "type": "object",
         "properties": {

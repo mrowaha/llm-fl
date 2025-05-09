@@ -7,7 +7,7 @@ from openai.types.responses.response_input_item_param import Message
 
 from fl_agents.hooks.base_agent import get_fault_localizer_hooks
 from fl_agents.tools.language_support import function_explanation_tool, class_method_explanation_tool
-from fl_agents.tools.files_support import tool__load_file
+from fl_agents.tools.files_support import tool__load_file, file_import_stmts_tool
 from models import deepseek_chat_model as coverage_analyzer_model
 # from models import qwen_code_model as fault_localizer_model
 from prompts import localize_fault_prompt, system_prompt_editor
@@ -65,7 +65,7 @@ async def tool__load_file_from_agent(run_context: RunContextWrapper, str_args) -
 
 file_content_tool = FunctionTool(
     name="get_file_content",
-    description="given a file path, gets the file content filtered by definitions of your choice",
+    description="given a file path, gets the file content filtered by definitions of your choice. Use this tool if import statements fail in helping you deduce the file path",
     params_json_schema={
                 "type": "object",
                 "properties": {
@@ -94,6 +94,7 @@ fault_localizer_agent = Agent(
         file_content_tool,
         function_explanation_tool,
         class_method_explanation_tool,
+        file_import_stmts_tool
     ],
     hooks=get_fault_localizer_hooks()
 )

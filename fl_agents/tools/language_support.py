@@ -15,7 +15,7 @@ async def tool__get_function_body(run_context: RunContextWrapper, str_args) -> s
     if executed_function_body is None:
         return "the function definition does not exist"
     return f"""
-<function_body_with_coverage>
+<function_body_with_coverage file_path={args['file_path']}>
 {executed_function_body[0]}
 
 <analysis>

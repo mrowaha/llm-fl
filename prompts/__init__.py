@@ -1,3 +1,3 @@
 from .localize_fault_prompt import localize_fault_prompt
 from .system_prompt import system_prompt_fl, system_prompt_editor
-from .analyze_coverage_prompt import analyze_coverage_prompt
+from .analyze_coverage_prompt import analyze_coverage_prompt, keep_definitions_prompt

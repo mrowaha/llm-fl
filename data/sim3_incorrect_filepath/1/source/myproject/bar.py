@@ -1,0 +1,7 @@
+from myproject.x import foo
+from myproject.foo import x
+
+
+def bar():
+    x()
+    return foo()

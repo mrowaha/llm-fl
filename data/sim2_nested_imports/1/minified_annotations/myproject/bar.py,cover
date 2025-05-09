@@ -1,4 +1,4 @@
- from myproject.foo import foo
+ from myproject.x import foo
  
  def bar():
      return foo()

@@ -1,0 +1,26 @@
+ import pytest
+ from thefuck.rules.git_add import match, get_new_command
+ from tests.utils import Command
+ 
+ 
+ @pytest.fixture
+ def stderr(target):
+ 
+ 
+ @pytest.mark.parametrize('script, target', [
+     ('git submodule update unknown', 'unknown'),
+ ])
+ def test_match(stderr, script, target):
+ 
+ 
+ @pytest.mark.parametrize('script', [
+     'git submodule update known', 'git commit known'])
+ def test_not_match(script):
+ 
+ 
+ @pytest.mark.parametrize('script, target, new_command', [
+     ('git submodule update unknown', 'unknown',
+      'git add -- unknown && git submodule update unknown'),
+     ('git commit unknown', 'unknown',
+      'git add -- unknown && git commit unknown')])
+ def test_get_new_command(stderr, script, target, new_command):

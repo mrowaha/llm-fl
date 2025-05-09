@@ -1,0 +1,46 @@
+ try:
+     from pathlib import Path
+ import pytest
+ from thefuck import shells
+ from thefuck import conf, const
+ 
+ shells.shell = shells.Generic()
+ 
+ 
+ def pytest_addoption(parser):
+     """Adds `--run-without-docker` argument."""
+     group = parser.getgroup("thefuck")
+     group.addoption('--enable-functional', action="store_true", default=False,
+                     help="Enable functional tests")
+ 
+ 
+ @pytest.fixture
+ def no_memoize(monkeypatch):
+ 
+ 
+ @pytest.fixture(autouse=True)
+ def settings(request):
+ 
+ 
+ 
+ @pytest.fixture
+ def no_colors(settings):
+ 
+ 
+ @pytest.fixture(autouse=True)
+ def no_cache(monkeypatch):
+ 
+ 
+ @pytest.fixture(autouse=True)
+ def functional(request):
+     if request.node.get_marker('functional') \
+             and not request.config.getoption('enable_functional'):
+ 
+ 
+ @pytest.fixture
+ def source_root():
+ 
+ 
+ @pytest.fixture
+ def set_shell(monkeypatch, request):
+ 

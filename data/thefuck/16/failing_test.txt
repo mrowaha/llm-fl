@@ -1,0 +1,17 @@
+=================================================================================== ERRORS ====================================================================================
+______________________________________________________________ ERROR at setup of test_match[git branch foo-foo] _______________________________________________________________
+
+request = <SubRequest 'functional' for <Function test_match[git branch foo-foo]>>
+
+    @pytest.fixture(autouse=True)
+    def functional(request):
+>       if request.node.get_marker('functional') \
+                and not request.config.getoption('enable_functional'):
+E               AttributeError: 'Function' object has no attribute 'get_marker'
+
+request    = <SubRequest 'functional' for <Function test_match[git branch foo-foo]>>
+
+tests/conftest.py:47: AttributeError
+=========================================================================== short test summary info ===========================================================================
+ERROR tests/rules/test_git_branch_exists.py::test_match[git branch foo-foo] - AttributeError: 'Function' object has no attribute 'get_marker'
+========================================================================= 1 warning, 1 error in 0.28s =========================================================================

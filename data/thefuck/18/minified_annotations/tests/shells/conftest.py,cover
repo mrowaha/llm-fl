@@ -1,0 +1,15 @@
+ import pytest
+ 
+ 
+ @pytest.fixture
+ def builtins_open(mocker):
+ 
+ 
+ @pytest.fixture
+ def isfile(mocker):
+ 
+ 
+ @pytest.fixture
+ @pytest.mark.usefixtures('isfile')
+ def history_lines(mocker):
+ 

@@ -1,0 +1,176 @@
+ """Module with shell specific actions, each shell class should
+ implement `from_shell`, `to_shell`, `app_alias`, `put_to_history` and
+ `get_aliases` methods.
+ 
+ """
+ from collections import defaultdict
+ from psutil import Process
+ from subprocess import Popen, PIPE
+ from time import time
+ import io
+ import os
+ import shlex
+ import six
+ from .utils import DEVNULL, memoize, cache
+ from .conf import settings
+ 
+ 
+ class Generic(object):
+ 
+     def get_aliases(self):
+ 
+     def _expand_aliases(self, command_script):
+ 
+     def from_shell(self, command_script):
+         """Prepares command before running in app."""
+ 
+     def to_shell(self, command_script):
+         """Prepares command for running in shell."""
+ 
+     def app_alias(self, fuck):
+ 
+     def _get_history_file_name(self):
+ 
+     def _get_history_line(self, command_script):
+ 
+     def put_to_history(self, command_script):
+         """Puts command script to shell history."""
+ 
+     def get_history(self):
+         """Returns list of history entries."""
+ 
+ 
+ 
+     def and_(self, *commands):
+ 
+     def how_to_configure(self):
+ 
+     def split_command(self, command):
+         """Split the command using shell-like syntax."""
+ 
+     def quote(self, s):
+         """Return a shell-escaped version of the string s."""
+ 
+ 
+ 
+     def _script_from_history(self, line):
+ 
+ 
+ class Bash(Generic):
+     def app_alias(self, fuck):
+ 
+     def _parse_alias(self, alias):
+ 
+     @memoize
+     @cache('.bashrc', '.bash_profile')
+     def get_aliases(self):
+ 
+     def _get_history_file_name(self):
+ 
+     def _get_history_line(self, command_script):
+ 
+     def how_to_configure(self):
+ 
+ 
+ class Fish(Generic):
+ 
+     def _get_overridden_aliases(self):
+ 
+     def app_alias(self, fuck):
+ 
+     @memoize
+     def get_aliases(self):
+ 
+     def _expand_aliases(self, command_script):
+ 
+     def from_shell(self, command_script):
+         """Prepares command before running in app."""
+ 
+     def _get_history_file_name(self):
+ 
+     def _get_history_line(self, command_script):
+ 
+     def _script_from_history(self, line):
+ 
+     def and_(self, *commands):
+ 
+     def how_to_configure(self):
+ 
+ 
+ class Zsh(Generic):
+     def app_alias(self, fuck):
+ 
+     def _parse_alias(self, alias):
+ 
+     @memoize
+     @cache('.zshrc')
+     def get_aliases(self):
+ 
+     def _get_history_file_name(self):
+ 
+     def _get_history_line(self, command_script):
+ 
+     def _script_from_history(self, line):
+ 
+     def how_to_configure(self):
+ 
+ 
+ class Tcsh(Generic):
+     def app_alias(self, fuck):
+ 
+     def _parse_alias(self, alias):
+ 
+     @memoize
+     def get_aliases(self):
+ 
+     def _get_history_file_name(self):
+ 
+     def _get_history_line(self, command_script):
+ 
+     def how_to_configure(self):
+ 
+ 
+ shells = defaultdict(Generic, {
+     'bash': Bash(),
+     'fish': Fish(),
+     'zsh': Zsh(),
+     'csh': Tcsh(),
+     'tcsh': Tcsh()})
+ 
+ 
+ @memoize
+ def _get_shell():
+ 
+ 
+ def from_shell(command):
+ 
+ 
+ def to_shell(command):
+ 
+ 
+ def app_alias(alias):
+ 
+ 
+ def thefuck_alias():
+ 
+ 
+ def put_to_history(command):
+ 
+ 
+ def and_(*commands):
+ 
+ 
+ def get_aliases():
+ 
+ 
+ def split_command(command):
+ 
+ 
+ def quote(s):
+ 
+ 
+ @memoize
+ def get_history():
+ 
+ 
+ def how_to_configure():

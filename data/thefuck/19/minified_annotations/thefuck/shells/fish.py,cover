@@ -1,0 +1,31 @@
+ from subprocess import Popen, PIPE
+ from time import time
+ import os
+ from ..utils import DEVNULL, memoize, cache
+ from .generic import Generic
+ 
+ 
+ class Fish(Generic):
+     def _get_overridden_aliases(self):
+ 
+     def app_alias(self, fuck):
+         # It is VERY important to have the variables declared WITHIN the alias
+ 
+     @memoize
+     @cache('.config/fish/config.fish', '.config/fish/functions')
+     def get_aliases(self):
+ 
+     def _expand_aliases(self, command_script):
+ 
+     def from_shell(self, command_script):
+         """Prepares command before running in app."""
+ 
+     def _get_history_file_name(self):
+ 
+     def _get_history_line(self, command_script):
+ 
+     def _script_from_history(self, line):
+ 
+     def and_(self, *commands):
+ 
+     def how_to_configure(self):

@@ -1,0 +1,24 @@
+ from time import time
+ import os
+ from ..conf import settings
+ from ..utils import memoize
+ from .generic import Generic
+ 
+ 
+ class Zsh(Generic):
+     def app_alias(self, alias_name):
+         # It is VERY important to have the variables declared WITHIN the alias
+ 
+ 
+     def _parse_alias(self, alias):
+ 
+     @memoize
+     def get_aliases(self):
+ 
+     def _get_history_file_name(self):
+ 
+     def _get_history_line(self, command_script):
+ 
+     def _script_from_history(self, line):
+ 
+     def how_to_configure(self):

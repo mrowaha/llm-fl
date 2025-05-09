@@ -1,0 +1,14 @@
+================================================================================== FAILURES ===================================================================================
+_______________________________________________________________________________ test_not_match ________________________________________________________________________________
+
+    def test_not_match():
+        assert not match(Command())
+>       assert not match(Command(script='sudo ls', stderr='Permission denied'))
+E       AssertionError: assert not True
+E        +  where True = match(Command(script=sudo ls, stdout=, stderr=Permission denied))
+E        +    where Command(script=sudo ls, stdout=, stderr=Permission denied) = Command(script='sudo ls', stderr='Permission denied')
+
+
+tests/rules/test_sudo.py:22: AssertionError
+=========================================================================== short test summary info ===========================================================================
+FAILED tests/rules/test_sudo.py::test_not_match - AssertionError: assert not True

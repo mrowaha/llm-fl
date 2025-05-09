@@ -1,0 +1,21 @@
+ import re
+ from decorator import decorator
+ from ..utils import is_app
+ from ..shells import shell
+ 
+ 
+ @decorator
+ def git_support(fn, command):
+     """Resolves git aliases and supports testing for both git and hub."""
+     # supports GitHub's `hub` command
+     # which is recommended to be used with `alias git=hub`
+     # but at this point, shell aliases have already been resolved
+ 
+     # perform git aliases expansion
+ 
+         # by default git quotes everything, for example:
+         #     'commit' '--amend'
+         # which is surprising and does not allow to easily test for
+         # eg. 'git commit'
+ 
+ 

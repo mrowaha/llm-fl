@@ -1,0 +1,27 @@
+ import pytest
+ from thefuck.rules.git_branch_exists import match, get_new_command
+ from tests.utils import Command
+ 
+ 
+ @pytest.fixture
+ def stderr(branch_name):
+ 
+ 
+ @pytest.fixture
+ def new_command(branch_name):
+ 
+ 
+ @pytest.mark.parametrize('script, branch_name', [
+     ('git branch foo', 'foo'), 
+     # ('git checkout bar', 'bar')
+ ])
+ def test_match(stderr, script, branch_name):
+ 
+ 
+ @pytest.mark.parametrize('script', ['git branch foo', 'git checkout bar'])
+ def test_not_match(script):
+ 
+ 
+ @pytest.mark.parametrize('script, branch_name, ', [
+     ('git checkout bar', 'bar')])
+ def test_get_new_command(stderr, new_command, script, branch_name):

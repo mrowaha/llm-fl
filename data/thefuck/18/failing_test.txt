@@ -1,0 +1,15 @@
+=================================================================================== ERRORS ====================================================================================
+_____________________________________________________ ERROR at setup of TestFish.test_get_overridden_aliases[cut,git,sed] _____________________________________________________
+
+request = <SubRequest 'functional' for <Function test_get_overridden_aliases[cut,git,sed]>>
+
+    @pytest.fixture(autouse=True)
+    def functional(request):
+>       if request.node.get_marker('functional') \
+                and not request.config.getoption('enable_functional'):
+E               AttributeError: 'Function' object has no attribute 'get_marker'
+
+tests/conftest.py:44: AttributeError
+=========================================================================== short test summary info ===========================================================================
+ERROR tests/shells/test_fish.py::TestFish::test_get_overridden_aliases[cut,git,sed] - AttributeError: 'Function' object has no attribute 'get_marker'
+======================================================================== 2 warnings, 1 error in 0.41s =========================================================================

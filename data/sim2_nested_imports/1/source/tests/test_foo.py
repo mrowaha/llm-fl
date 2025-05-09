@@ -1,0 +1,9 @@
+import pytest
+from myproject.bar import bar
+
+@pytest.mark.parametrize('input', [
+    ('foo')
+])
+def test_get_foo(input):
+    output = bar()
+    assert(output == input)

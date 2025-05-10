@@ -83,6 +83,5 @@ def main():
     # delete_empty_folders(args.folder)
     minify_annotation_folder(args.folder, args.skip_first)
 
-
 if __name__ == "__main__":
     main()

@@ -1,0 +1,213 @@
+Expected tree:
+file_input
+  decorated
+    decorator
+      AT '# fmt: off\n' '@'
+      NAME 'test'
+      LPAR '('
+      atom
+        LSQB '['
+        listmaker
+          NUMBER '\n    ' '1'
+          COMMA ','
+          NUMBER ' ' '2'
+          COMMA ','
+          NUMBER '\n    ' '3'
+          COMMA ','
+          NUMBER ' ' '4'
+          COMMA ','
+        /listmaker
+        RSQB '\n' ']'
+      /atom
+      RPAR ')'
+      NEWLINE '\n'
+    /decorator
+    funcdef
+      NAME '# fmt: on\n' 'def'
+      NAME ' ' 'f'
+      parameters
+        LPAR '('
+        RPAR ')'
+      /parameters
+      COLON ':'
+      suite
+        NEWLINE '\n'
+        INDENT ''
+        simple_stmt
+          NAME '    ' 'pass'
+          NEWLINE '\n'
+        /simple_stmt
+        DEDENT ''
+      /suite
+    /funcdef
+  /decorated
+  decorated
+    decorator
+      AT '\n\n' '@'
+      NAME 'test'
+      LPAR '('
+      atom
+        LSQB '\n    ' '['
+        listmaker
+          NUMBER '\n        ' '1'
+          COMMA ','
+          NUMBER '\n        ' '2'
+          COMMA ','
+          NUMBER '\n        ' '3'
+          COMMA ','
+          NUMBER '\n        ' '4'
+          COMMA ','
+        /listmaker
+        RSQB '\n    ' ']'
+      /atom
+      RPAR '\n' ')'
+      NEWLINE '\n'
+    /decorator
+    funcdef
+      NAME 'def'
+      NAME ' ' 'f'
+      parameters
+        LPAR '('
+        RPAR ')'
+      /parameters
+      COLON ':'
+      suite
+        NEWLINE '\n'
+        INDENT ''
+        simple_stmt
+          NAME '    ' 'pass'
+          NEWLINE '\n'
+        /simple_stmt
+        DEDENT ''
+      /suite
+    /funcdef
+  /decorated
+  ENDMARKER ''
+/file_input
+Actual tree:
+file_input
+  decorated
+    decorator
+      AT '# fmt: off\n' '@'
+      NAME 'test'
+      LPAR '('
+      atom
+        LSQB '['
+        listmaker
+          NUMBER '\n    ' '1'
+          COMMA ','
+          NUMBER ' ' '2'
+          COMMA ','
+          NUMBER '\n    ' '3'
+          COMMA ','
+          NUMBER ' ' '4'
+          COMMA ','
+        /listmaker
+        RSQB '\n' ']'
+      /atom
+      RPAR ')'
+      NEWLINE '\n'
+    /decorator
+    funcdef
+      NAME '# fmt: on\n' 'def'
+      NAME ' ' 'f'
+      parameters
+        LPAR '('
+        RPAR ')'
+      /parameters
+      COLON ':'
+      simple_stmt
+        NAME ' ' 'pass'
+        NEWLINE '\n'
+      /simple_stmt
+    /funcdef
+  /decorated
+  decorated
+    decorator
+      AT '\n' '@'
+      NAME 'test'
+      LPAR '('
+      atom
+        LSQB '['
+        listmaker
+          NUMBER '\n    ' '1'
+          COMMA ','
+          NUMBER ' ' '2'
+          COMMA ','
+          NUMBER '\n    ' '3'
+          COMMA ','
+          NUMBER ' ' '4'
+          COMMA ','
+        /listmaker
+        RSQB '\n' ']'
+      /atom
+      RPAR ')'
+      NEWLINE '\n'
+    /decorator
+    funcdef
+      NAME 'def'
+      NAME ' ' 'f'
+      parameters
+        LPAR '('
+        RPAR ')'
+      /parameters
+      COLON ':'
+      simple_stmt
+        NAME ' ' 'pass'
+        NEWLINE '\n'
+      /simple_stmt
+    /funcdef
+  /decorated
+  ENDMARKER ''
+/file_input
+======================================================================
+FAIL: test_fmtonoff4 (tests.test_black.BlackTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rowaha/.pyenv/versions/3.8.20/lib/python3.8/unittest/mock.py", line 1325, in patched
+    return func(*newargs, **newkeywargs)
+  File "/home/rowaha/work/llm-fl/BugsInPy/framework/bin/temp/black/tests/test_black.py", line 639, in test_fmtonoff4
+    self.assertFormatEqual(expected, actual)
+  File "/home/rowaha/work/llm-fl/BugsInPy/framework/bin/temp/black/tests/test_black.py", line 153, in assertFormatEqual
+    self.assertEqual(expected, actual)
+AssertionError: '# fm[57 chars] f():\n    pass\n\n\n@test(\n    [\n        1,[64 chars]ss\n' != '# fm[57 chars] f(): pass\n\n@test([\n    1, 2,\n    3, 4,\n][14 chars]ss\n'
+  # fmt: off
+  @test([
+      1, 2,
+      3, 4,
+  ])
+  # fmt: on
+- def f():
++ def f(): pass
+?         +++++
+-     pass
+  
+- 
+- @test(
++ @test([
+?       +
+-     [
+-         1,
+-         2,
+?     ^^^
++     1, 2,
+?     ^^
+-         3,
+-         4,
+?     ^^^
++     3, 4,
+?     ^^
+-     ]
+- )
++ ])
+? +
+- def f():
++ def f(): pass
+?         +++++
+-     pass
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.026s
+
+FAILED (failures=1)

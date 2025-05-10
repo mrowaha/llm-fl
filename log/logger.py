@@ -49,7 +49,7 @@ class Logger:
 
         # Add file handler if path provided
         if file_path:
-            file_handler = logging.FileHandler(file_path)
+            file_handler = logging.FileHandler(file_path, encoding='utf-8')
             self.logger.addHandler(file_handler)
         return self
 

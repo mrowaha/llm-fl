@@ -1,4 +1,5 @@
 import json
+import logging
 from agents.tool import FunctionTool
 from agents.run_context import RunContextWrapper
 from lang.language_support import get_executed_function_body, get_executed_class_method
@@ -6,6 +7,8 @@ from lang.language_support import get_executed_function_body, get_executed_class
 
 async def tool__get_function_body(run_context: RunContextWrapper, str_args) -> str:
     args = json.loads(str_args)
+    logger: logging.Logger = run_context.context['logger']
+    logger.debug(f"tool params: {str_args}")
     executed_function_body = get_executed_function_body(
         run_context.context['project_name'],
         int(run_context.context['bug_id']),
@@ -30,6 +33,8 @@ async def tool__get_function_body(run_context: RunContextWrapper, str_args) -> s
 
 async def tool__get_class_method_body(run_context: RunContextWrapper, str_args) -> str:
     args = json.loads(str_args)
+    logger: logging.Logger = run_context.context['logger']
+    logger.debug(f"tool params: {str_args}")
     executed_class_method = get_executed_class_method(
         run_context.context['project_name'],
         int(run_context.context['bug_id']),
@@ -54,7 +59,7 @@ function_explanation_tool = FunctionTool(
             "function_name": {
                     "type": "string",
                     "description": "the name of the function that we need the function body for"
-                }
+            }
         }
     },
     on_invoke_tool=tool__get_function_body,
@@ -73,11 +78,11 @@ class_method_explanation_tool = FunctionTool(
             "method_name": {
                     "type": "string",
                     "description": "the name of the class method that we need the body for"
-                },
+            },
             "class_name": {
                     "type": "string",
                     "description": "the name of the class that has the method"
-                }
+            }
         }
     },
     on_invoke_tool=tool__get_class_method_body

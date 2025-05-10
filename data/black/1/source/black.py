@@ -68,7 +68,8 @@ DEFAULT_EXCLUDES = r"/(\.eggs|\.git|\.hg|\.mypy_cache|\.nox|\.tox|\.venv|\.svn|_
 DEFAULT_INCLUDES = r"\.pyi?$"
 CACHE_DIR = Path(user_cache_dir("black", version=__version__))
 
-STRING_PREFIX_CHARS: Final = "furbFURB"  # All possible string prefix characters.
+# All possible string prefix characters.
+STRING_PREFIX_CHARS: Final = "furbFURB"
 
 
 # types
@@ -486,7 +487,8 @@ def main(
     config: Optional[str],
 ) -> None:
     """The uncompromising code formatter."""
-    write_back = WriteBack.from_configuration(check=check, diff=diff, color=color)
+    write_back = WriteBack.from_configuration(
+        check=check, diff=diff, color=color)
     if target_version:
         if py36:
             err("Cannot use both --target-version and --py36")
@@ -532,7 +534,8 @@ def main(
         if p.is_dir():
             sources.update(
                 gen_python_files_in_dir(
-                    p, root, include_regex, exclude_regex, report, get_gitignore(root)
+                    p, root, include_regex, exclude_regex, report, get_gitignore(
+                        root)
                 )
             )
         elif p.is_file() or s == "-":
@@ -973,7 +976,8 @@ def get_grammars(target_versions: Set[TargetVersion]) -> List[Grammar]:
         )
     if not supports_feature(target_versions, Feature.ASYNC_KEYWORDS):
         # Python 3.0-3.6
-        grammars.append(pygram.python_grammar_no_print_statement_no_exec_statement)
+        grammars.append(
+            pygram.python_grammar_no_print_statement_no_exec_statement)
     # At least one of the above branches must have been taken, because every Python
     # version has exactly one of the two 'ASYNC_*' flags
     return grammars
@@ -997,7 +1001,8 @@ def lib2to3_parse(src_txt: str, target_versions: Iterable[TargetVersion] = ()) -
                 faulty_line = lines[lineno - 1]
             except IndexError:
                 faulty_line = "<line number missing in source>"
-            exc = InvalidInput(f"Cannot parse: {lineno}:{column}: {faulty_line}")
+            exc = InvalidInput(
+                f"Cannot parse: {lineno}:{column}: {faulty_line}")
     else:
         raise exc from None
 
@@ -1199,7 +1204,8 @@ class BracketTracker:
     """Keeps track of brackets on a line."""
 
     depth: int = 0
-    bracket_match: Dict[Tuple[Depth, NodeType], Leaf] = field(default_factory=dict)
+    bracket_match: Dict[Tuple[Depth, NodeType],
+                        Leaf] = field(default_factory=dict)
     delimiters: Dict[LeafID, Priority] = field(default_factory=dict)
     previous: Optional[Leaf] = None
     _for_loop_depths: List[int] = field(default_factory=list)
@@ -1454,7 +1460,7 @@ class Line:
 
             commas = 0
             comma_depth = self.leaves[close_index - 1].bracket_depth
-            for leaf in self.leaves[_open_index + 1 : close_index]:
+            for leaf in self.leaves[_open_index + 1: close_index]:
                 if leaf.bracket_depth == comma_depth and leaf.type == token.COMMA:
                     commas += 1
             if commas > 1:
@@ -1583,7 +1589,8 @@ class Line:
 
         # Grab the first and last line numbers, skipping generated leaves
         first_line = next((l.lineno for l in self.leaves if l.lineno != 0), 0)
-        last_line = next((l.lineno for l in reversed(self.leaves) if l.lineno != 0), 0)
+        last_line = next((l.lineno for l in reversed(
+            self.leaves) if l.lineno != 0), 0)
 
         if first_line == last_line:
             # We look at the last two leaves since a comma or an
@@ -1871,7 +1878,8 @@ class LineGenerator(Visitor[Line]):
         """
         if not self.current_line:
             self.current_line.depth += indent
-            return  # Line is empty, don't emit. Creating a new one unnecessary.
+            # Line is empty, don't emit. Creating a new one unnecessary.
+            return
 
         complete_line = self.current_line
         self.current_line = Line(depth=complete_line.depth + indent)
@@ -1899,7 +1907,8 @@ class LineGenerator(Visitor[Line]):
 
             normalize_prefix(node, inside_brackets=any_open_brackets)
             if self.normalize_strings and node.type == token.STRING:
-                normalize_string_prefix(node, remove_u_prefix=self.remove_u_prefix)
+                normalize_string_prefix(
+                    node, remove_u_prefix=self.remove_u_prefix)
                 normalize_string_quotes(node)
             if node.type == token.NUMBER:
                 normalize_numeric_literal(node)
@@ -2039,12 +2048,15 @@ class LineGenerator(Visitor[Line]):
         """You are in a twisty little maze of passages."""
         v = self.visit_stmt
         Ø: Set[str] = set()
-        self.visit_assert_stmt = partial(v, keywords={"assert"}, parens={"assert", ","})
+        self.visit_assert_stmt = partial(
+            v, keywords={"assert"}, parens={"assert", ","})
         self.visit_if_stmt = partial(
             v, keywords={"if", "else", "elif"}, parens={"if", "elif"}
         )
-        self.visit_while_stmt = partial(v, keywords={"while", "else"}, parens={"while"})
-        self.visit_for_stmt = partial(v, keywords={"for", "else"}, parens={"for", "in"})
+        self.visit_while_stmt = partial(
+            v, keywords={"while", "else"}, parens={"while"})
+        self.visit_for_stmt = partial(
+            v, keywords={"for", "else"}, parens={"for", "in"})
         self.visit_try_stmt = partial(
             v, keywords={"try", "except", "else", "finally"}, parens=Ø
         )
@@ -2053,7 +2065,8 @@ class LineGenerator(Visitor[Line]):
         self.visit_funcdef = partial(v, keywords={"def"}, parens=Ø)
         self.visit_classdef = partial(v, keywords={"class"}, parens=Ø)
         self.visit_expr_stmt = partial(v, keywords=Ø, parens=ASSIGNMENTS)
-        self.visit_return_stmt = partial(v, keywords={"return"}, parens={"return"})
+        self.visit_return_stmt = partial(
+            v, keywords={"return"}, parens={"return"})
         self.visit_import_from = partial(v, keywords=Ø, parens={"import"})
         self.visit_del_stmt = partial(v, keywords=Ø, parens={"del"})
         self.visit_async_funcdef = self.visit_async_stmt
@@ -2061,7 +2074,8 @@ class LineGenerator(Visitor[Line]):
 
 
 IMPLICIT_TUPLE = {syms.testlist, syms.testlist_star_expr, syms.exprlist}
-BRACKET = {token.LPAR: token.RPAR, token.LSQB: token.RSQB, token.LBRACE: token.RBRACE}
+BRACKET = {token.LPAR: token.RPAR,
+           token.LSQB: token.RSQB, token.LBRACE: token.RBRACE}
 OPENING_BRACKETS = set(BRACKET.keys())
 CLOSING_BRACKETS = set(BRACKET.values())
 BRACKETS = OPENING_BRACKETS | CLOSING_BRACKETS
@@ -5518,7 +5532,8 @@ def should_explode(line: Line, opening_bracket: Leaf) -> bool:
     try:
         last_leaf = line.leaves[-1]
         exclude = {id(last_leaf)} if last_leaf.type == token.COMMA else set()
-        max_priority = line.bracket_tracker.max_delimiter_priority(exclude=exclude)
+        max_priority = line.bracket_tracker.max_delimiter_priority(
+            exclude=exclude)
     except (IndexError, ValueError):
         return False
 
@@ -5644,7 +5659,8 @@ def get_future_imports(node: Node) -> Set[str]:
 
             elif child.type == syms.import_as_name:
                 orig_name = child.children[0]
-                assert isinstance(orig_name, Leaf), "Invalid syntax parsing imports"
+                assert isinstance(
+                    orig_name, Leaf), "Invalid syntax parsing imports"
                 assert orig_name.type == token.NAME, "Invalid syntax parsing imports"
                 yield orig_name.value
 
@@ -5708,7 +5724,8 @@ def gen_python_files_in_dir(
 
     `report` is where output about exclusions goes.
     """
-    assert root.is_absolute(), f"INTERNAL ERROR: `root` must be absolute but is {root}"
+    assert root.is_absolute(
+    ), f"INTERNAL ERROR: `root` must be absolute but is {root}"
     for child in path.iterdir():
         # First ignore files matching .gitignore
         if gitignore.match_file(child.as_posix()):
@@ -5736,7 +5753,8 @@ def gen_python_files_in_dir(
 
         exclude_match = exclude.search(normalized_path)
         if exclude_match and exclude_match.group(0):
-            report.path_ignored(child, "matches the --exclude regular expression")
+            report.path_ignored(
+                child, "matches the --exclude regular expression")
             continue
 
         if child.is_dir():
@@ -5853,7 +5871,8 @@ class Report:
         if self.change_count:
             s = "s" if self.change_count > 1 else ""
             report.append(
-                click.style(f"{self.change_count} file{s} {reformatted}", bold=True)
+                click.style(
+                    f"{self.change_count} file{s} {reformatted}", bold=True)
             )
         if self.same_count:
             s = "s" if self.same_count > 1 else ""
@@ -5972,7 +5991,8 @@ def assert_equivalent(src: str, dst: str) -> None:
     try:
         dst_ast = parse_ast(dst)
     except Exception as exc:
-        log = dump_to_file("".join(traceback.format_tb(exc.__traceback__)), dst)
+        log = dump_to_file(
+            "".join(traceback.format_tb(exc.__traceback__)), dst)
         raise AssertionError(
             f"INTERNAL ERROR: Black produced invalid code: {exc}. Please report a bug"
             " on https://github.com/psf/black/issues.  This invalid output might be"
@@ -6034,7 +6054,8 @@ def diff(a: str, b: str, a_name: str, b_name: str) -> str:
     a_lines = [line + "\n" for line in a.splitlines()]
     b_lines = [line + "\n" for line in b.splitlines()]
     return "".join(
-        difflib.unified_diff(a_lines, b_lines, fromfile=a_name, tofile=b_name, n=5)
+        difflib.unified_diff(
+            a_lines, b_lines, fromfile=a_name, tofile=b_name, n=5)
     )
 
 
@@ -6309,7 +6330,8 @@ def write_cache(cache: Cache, sources: Iterable[Path], mode: Mode) -> None:
     cache_file = get_cache_file(mode)
     try:
         CACHE_DIR.mkdir(parents=True, exist_ok=True)
-        new_cache = {**cache, **{src.resolve(): get_cache_info(src) for src in sources}}
+        new_cache = {**cache, **{src.resolve(): get_cache_info(src)
+                                 for src in sources}}
         with tempfile.NamedTemporaryFile(dir=str(cache_file.parent), delete=False) as f:
             pickle.dump(new_cache, f, protocol=4)
         os.replace(f.name, cache_file)

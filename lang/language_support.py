@@ -13,7 +13,7 @@ def get_function_body(
     project_dir = dirs.get_project_bug_dir(project_name, bug_id, 'data')
     true_file_path = os.path.join(
         str(project_dir.absolute()), 'source', file_path)
-    with open(true_file_path, "r") as f:
+    with open(true_file_path, "r", encoding='utf-8') as f:
         source = f.read()
 
     # Parse the file using AST
@@ -54,7 +54,7 @@ def get_executed_function_body(
         str(project_dir.absolute()), 'annotation', file_path+',cover')
 
     executed_body: Optional[list[str]] = None
-    with open(true_file_path, "r") as f:
+    with open(true_file_path, "r", encoding='utf-8') as f:
         lines = f.readlines()
         executed_body = lines[start_line - 1:end_line]
     if executed_body is not None:
@@ -69,7 +69,7 @@ def get_class_body(
     project_dir = dirs.get_project_bug_dir(project_name, bug_id, 'data')
     true_file_path = os.path.join(
         str(project_dir.absolute()), 'source', file_path)
-    with open(true_file_path, "r") as f:
+    with open(true_file_path, "r", encoding='utf-8') as f:
         source = f.read()
     tree = ast.parse(source, filename=true_file_path)
     for node in ast.walk(tree):
@@ -86,7 +86,7 @@ def get_class_method(
     project_dir = dirs.get_project_bug_dir(project_name, bug_id, 'data')
     true_file_path = os.path.join(
         str(project_dir.absolute()), 'source', file_path)
-    with open(true_file_path, "r") as f:
+    with open(true_file_path, "r", encoding='utf-8') as f:
         source = f.read()
 
     tree = ast.parse(source, filename=true_file_path)
@@ -128,7 +128,7 @@ def get_executed_class_method(
         str(project_dir.absolute()), 'annotation', file_path+',cover')
 
     executed_body: Optional[list[str]] = None
-    with open(true_file_path, "r") as f:
+    with open(true_file_path, "r", encoding='utf-8') as f:
         lines = f.readlines()
         executed_body = lines[start_line - 1:end_line]
     if executed_body is not None:
@@ -143,7 +143,7 @@ def extract_imports(
     project_dir = dirs.get_project_bug_dir(project_name, bug_id, 'data')
     true_file_path = os.path.join(
         str(project_dir.absolute()), 'source', file_path)
-    with open(true_file_path, "r") as f:
+    with open(true_file_path, "r", encoding='utf-8') as f:
         source = f.read()
 
     tree = ast.parse(source)

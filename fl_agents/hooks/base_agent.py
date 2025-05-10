@@ -20,7 +20,9 @@ class BaseAgentHooks(AgentHooks):
         self._logger.debug(f"agent={agent.name} ended with output:\n{output}")
 
     async def on_tool_start(self, context, agent, tool):
-        self._logger.debug(f"agent={agent.name} tool start: {tool.name}")
+        context.context['logger'] = self._logger
+        self._logger.debug(
+            f"agent={agent.name} tool start: {tool.name}")
 
     async def on_tool_end(self, context, agent, tool, result):
         self._logger.debug(

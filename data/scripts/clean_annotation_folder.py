@@ -27,7 +27,7 @@ def delete_empty_folders(folder_path):
                 print(f"Removed empty directory: {dir_path}")
 
 
-def minify_annotation_folder(folder_path):
+def minify_annotation_folder(folder_path, skip_first_char = False):
     backup_path = os.path.join(folder_path, "..", "minified_annotations")
     if os.path.exists(backup_path):
         shutil.rmtree(backup_path)
@@ -44,7 +44,7 @@ def minify_annotation_folder(folder_path):
                 lines = f.readlines()
 
             first_char = lines[0][0]
-            if first_char == '>':
+            if first_char == '>' or skip_first_char:
                 # Filter out lines starting with '!'
                 new_lines = [
                     line[1:] for line in lines if not line.startswith('!')]
@@ -73,6 +73,7 @@ def main():
     parser = argparse.ArgumentParser(
         description="Clean and filter files in an annotation folder.")
     parser.add_argument("folder", help="Path to the annotation folder")
+    parser.add_argument("-skip-first", type=bool, help="Skip first char", default=False)
     args = parser.parse_args()
 
     if not os.path.isdir(args.folder):
@@ -80,7 +81,7 @@ def main():
         return
 
     # delete_empty_folders(args.folder)
-    minify_annotation_folder(args.folder)
+    minify_annotation_folder(args.folder, args.skip_first)
 
 
 if __name__ == "__main__":

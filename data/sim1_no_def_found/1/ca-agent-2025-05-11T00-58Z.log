@@ -1,0 +1,12 @@
+agent=Coverage Analyzer Agent started
+agent=Coverage Analyzer Agent ended with output:
+<analysis>
+1. The input file 'myproject/foo.py' contains an incomplete function definition 'bar()'
+2. The definitions to keep list contains only ['foo']
+3. Since 'bar' is not in the keep list, it should be removed
+4. There are no import statements to preserve
+5. The final output should be an empty file since no requested definitions exist in the source
+</analysis>
+
+<file_content>
+</file_content>

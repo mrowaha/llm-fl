@@ -1,0 +1,214 @@
+agent=Coverage Analyzer Agent started
+agent=Coverage Analyzer Agent ended with output:
+<analysis>
+The file contains two definitions that match the requested names: 'main' and 'cli'. 
+
+1. 'main' is a click command function decorated with @click.command() that serves as the main entry point for the Black formatter.
+2. 'cli' is not found in the file, despite being requested in the definitions list.
+</analysis>
+
+<file_content>
+import ast
+import asyncio
+from concurrent.futures import Executor, ProcessPoolExecutor
+from contextlib import contextmanager
+from datetime import datetime
+from enum import Enum
+from functools import lru_cache, partial, wraps
+import io
+import itertools
+import logging
+from multiprocessing import Manager, freeze_support
+import os
+from pathlib import Path
+import pickle
+import regex as re
+import signal
+import sys
+import tempfile
+import tokenize
+import traceback
+from typing import (
+    Any,
+    Callable,
+    Collection,
+    Dict,
+    Generator,
+    Generic,
+    Iterable,
+    Iterator,
+    List,
+    Optional,
+    Pattern,
+    Sequence,
+    Set,
+    Tuple,
+    TypeVar,
+    Union,
+    cast,
+)
+from typing_extensions import Final
+from mypy_extensions import mypyc_attr
+
+from appdirs import user_cache_dir
+from dataclasses import dataclass, field, replace
+import click
+import toml
+from typed_ast import ast3, ast27
+from pathspec import PathSpec
+
+# lib2to3 fork
+from blib2to3.pytree import Node, Leaf, type_repr
+from blib2to3 import pygram, pytree
+from blib2to3.pgen2 import driver, token
+from blib2to3.pgen2.grammar import Grammar
+from blib2to3.pgen2.parse import ParseError
+
+from _black_version import version as __version__
+
+@click.command(context_settings=dict(help_option_names=["-h", "--help"]))
+@click.option("-c", "--code", type=str, help="Format the code passed in as a string.")
+@click.option(
+    "-l",
+    "--line-length",
+    type=int,
+    default=DEFAULT_LINE_LENGTH,
+    help="How many characters per line to allow.",
+    show_default=True,
+)
+@click.option(
+    "-t",
+    "--target-version",
+    type=click.Choice([v.name.lower() for v in TargetVersion]),
+    callback=target_version_option_callback,
+    multiple=True,
+    help=(
+        "Python versions that should be supported by Black's output. [default: "
+        "per-file auto-detection]"
+    ),
+)
+@click.option(
+    "--py36",
+    is_flag=True,
+    help=(
+        "Allow using Python 3.6-only syntax on all input files.  This will put "
+        "trailing commas in function signatures and calls also after *args and "
+        "**kwargs. Deprecated; use --target-version instead. "
+        "[default: per-file auto-detection]"
+    ),
+)
+@click.option(
+    "--pyi",
+    is_flag=True,
+    help=(
+        "Format all input files like typing stubs regardless of file extension "
+        "(useful when piping source on standard input)."
+    ),
+)
+@click.option(
+    "-S",
+    "--skip-string-normalization",
+    is_flag=True,
+    help="Don't normalize string quotes or prefixes.",
+)
+@click.option(
+    "--check",
+    is_flag=True,
+    help=(
+        "Don't write the files back, just return the status.  Return code 0 "
+        "means nothing would change.  Return code 1 means some files would be "
+        "reformatted.  Return code 123 means there was an internal error."
+    ),
+)
+@click.option(
+    "--diff",
+    is_flag=True,
+    help="Don't write the files back, just output a diff for each file on stdout.",
+)
+@click.option(
+    "--fast/--safe",
+    is_flag=True,
+    help="If --fast given, skip temporary sanity checks. [default: --safe]",
+)
+@click.option(
+    "--include",
+    type=str,
+    default=DEFAULT_INCLUDES,
+    help=(
+        "A regular expression that matches files and directories that should be "
+        "included on recursive searches.  An empty value means all files are "
+        "included regardless of the name.  Use forward slashes for directories on "
+        "all platforms (Windows, too).  Exclusions are calculated first, inclusions "
+        "later."
+    ),
+    show_default=True,
+)
+@click.option(
+    "--exclude",
+    type=str,
+    default=DEFAULT_EXCLUDES,
+    help=(
+        "A regular expression that matches files and directories that should be "
+        "excluded on recursive searches.  An empty value means no paths are excluded. "
+        "Use forward slashes for directories on all platforms (Windows, too).  "
+        "Exclusions are calculated first, inclusions later."
+    ),
+    show_default=True,
+)
+@click.option(
+    "-q",
+    "--quiet",
+    is_flag=True,
+    help=(
+        "Don't emit non-error messages to stderr. Errors are still emitted; "
+        "silence those with 2>/dev/null."
+    ),
+)
+@click.option(
+    "-v",
+    "--verbose",
+    is_flag=True,
+    help=(
+        "Also emit messages to stderr about files that were not changed or were "
+        "ignored due to --exclude=."
+    ),
+)
+@click.version_option(version=__version__)
+@click.argument(
+    "src",
+    nargs=-1,
+    type=click.Path(
+        exists=True, file_okay=True, dir_okay=True, readable=True, allow_dash=True
+    ),
+    is_eager=True,
+)
+@click.option(
+    "--config",
+    type=click.Path(
+        exists=False, file_okay=True, dir_okay=False, readable=True, allow_dash=False
+    ),
+    is_eager=True,
+    callback=read_pyproject_toml,
+    help="Read configuration from PATH.",
+)
+@click.pass_context
+def main(
+    ctx: click.Context,
+    code: Optional[str],
+    line_length: int,
+    target_version: List[TargetVersion],
+    check: bool,
+    diff: bool,
+    fast: bool,
+    pyi: bool,
+    py36: bool,
+    skip_string_normalization: bool,
+    quiet: bool,
+    verbose: bool,
+    include: str,
+    exclude: str,
+    src: Tuple[str, ...],
+    config: Optional[str],
+) -> None:
+    """The uncompromising code formatter."""
+</file_content>

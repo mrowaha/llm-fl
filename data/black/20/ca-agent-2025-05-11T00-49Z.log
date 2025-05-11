@@ -1,0 +1,56 @@
+agent=Coverage Analyzer Agent started
+agent=Coverage Analyzer Agent ended with output:
+<analysis>
+The definition requested is 'GRAMMARS', which is a list of grammar objects from the blib2to3 library. This is a variable definition that is used in the lib2to3_parse() function to attempt parsing Python code with different grammar variants.
+</analysis>
+
+<file_content>
+#!/usr/bin/env python3
+
+import asyncio
+from asyncio.base_events import BaseEventLoop
+from concurrent.futures import Executor, ProcessPoolExecutor
+from enum import Enum
+from functools import partial, wraps
+import keyword
+import logging
+from multiprocessing import Manager
+import os
+from pathlib import Path
+import re
+import tokenize
+import signal
+import sys
+from typing import (
+    Any,
+    Callable,
+    Collection,
+    Dict,
+    Generic,
+    Iterable,
+    Iterator,
+    List,
+    Optional,
+    Set,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+)
+
+from attr import dataclass, Factory
+import click
+
+# lib2to3 fork
+from blib2to3.pytree import Node, Leaf, type_repr
+from blib2to3 import pygram, pytree
+from blib2to3.pgen2 import driver, token
+from blib2to3.pgen2.parse import ParseError
+
+GRAMMARS = [
+    pygram.python_grammar_no_print_statement_no_exec_statement,
+    pygram.python_grammar_no_print_statement,
+    pygram.python_grammar_no_exec_statement,
+    pygram.python_grammar,
+]
+</file_content>

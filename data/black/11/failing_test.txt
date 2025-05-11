@@ -1,0 +1,74 @@
+Expected tree:
+file_input
+  funcdef
+    NAME 'def'
+    NAME ' ' 'f'
+    parameters
+      LPAR '('
+      typedargslist
+        NAME '\n    ' 'a'
+        COMMA ','
+      /typedargslist
+      RPAR '  # type: int\n' ')'
+    /parameters
+    COLON ':'
+    suite
+      NEWLINE '\n'
+      INDENT ''
+      simple_stmt
+        NAME '    ' 'pass'
+        NEWLINE '\n'
+      /simple_stmt
+      DEDENT ''
+    /suite
+  /funcdef
+  ENDMARKER ''
+/file_input
+Actual tree:
+file_input
+  funcdef
+    NAME 'def'
+    NAME ' ' 'f'
+    parameters
+      LPAR '('
+      typedargslist
+        NAME 'a'
+        COMMA ','
+      /typedargslist
+      RPAR ')'
+    /parameters
+    COLON ':'
+    suite
+      NEWLINE '  # type: int' '\n'
+      INDENT ''
+      simple_stmt
+        NAME '    ' 'pass'
+        NEWLINE '\n'
+      /simple_stmt
+      DEDENT ''
+    /suite
+  /funcdef
+  ENDMARKER ''
+/file_input
+======================================================================
+FAIL: test_comments6 (tests.test_black.BlackTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rowaha/.pyenv/versions/3.8.20/lib/python3.8/unittest/mock.py", line 1325, in patched
+    return func(*newargs, **newkeywargs)
+  File "/home/rowaha/work/llm-fl/BugsInPy/framework/bin/temp/black/tests/test_black.py", line 369, in test_comments6
+    self.assertFormatEqual(expected, actual)
+  File "/home/rowaha/work/llm-fl/BugsInPy/framework/bin/temp/black/tests/test_black.py", line 156, in assertFormatEqual
+    self.assertEqual(expected, actual)
+AssertionError: 'def f(\n    a,  # type: int\n):\n    pass\n' != 'def f(a,):  # type: int\n    pass\n'
++ def f(a,):  # type: int
+- def f(
+-     a,  # type: int
+- ):
+      pass
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.009s
+
+FAILED (failures=1)

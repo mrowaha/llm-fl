@@ -1,0 +1,36 @@
+--- file input to test the formatting --------
+#!/usr/bin/env python2
+from __future__ import print_function
+
+print('hello')
+print(u'hello')
+print(a, file=sys.stderr)
+
+# output
+
+
+#!/usr/bin/env python2
+from __future__ import print_function
+
+print("hello")
+print(u"hello")
+print(a, file=sys.stderr)
+----------- file input end -------------------
+======================================================================
+ERROR: test_python2_print_function (tests.test_black.BlackTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rowaha/.pyenv/versions/3.8.20/lib/python3.8/unittest/mock.py", line 1325, in patched
+    return func(*newargs, **newkeywargs)
+  File "/home/rowaha/work/llm-fl/BugsInPy/framework/bin/temp/black/tests/test_black.py", line 468, in test_python2_print_function
+    actual = fs(source, mode=mode)
+  File "/home/rowaha/work/llm-fl/BugsInPy/framework/bin/temp/black/black.py", line 669, in format_str
+    src_node = lib2to3_parse(src_contents.lstrip(), mode.target_versions)
+  File "/home/rowaha/work/llm-fl/BugsInPy/framework/bin/temp/black/black.py", line 758, in lib2to3_parse
+    raise exc from None
+black.InvalidInput: Cannot parse: 6:13: print(a, file=sys.stderr)
+
+----------------------------------------------------------------------
+Ran 1 test in 0.005s
+
+FAILED (errors=1)

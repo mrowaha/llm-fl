@@ -1,0 +1,33 @@
+--- file python37 used as input to test ---
+#!/usr/bin/env python3.7
+
+def f():
+    return (i*2 async for i in arange(42))
+
+# output
+
+
+#!/usr/bin/env python3.7
+
+
+def f():
+    return (i * 2 async for i in arange(42))
+--- file end
+======================================================================
+ERROR: test_python37 (tests.test_black.BlackTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rowaha/.pyenv/versions/3.8.20/lib/python3.8/unittest/mock.py", line 1325, in patched
+    return func(*newargs, **newkeywargs)
+  File "/home/rowaha/work/llm-fl/BugsInPy/framework/bin/temp/black/tests/test_black.py", line 417, in test_python37
+    actual = fs(source)
+  File "/home/rowaha/work/llm-fl/BugsInPy/framework/bin/temp/black/black.py", line 610, in format_str
+    src_node = lib2to3_parse(src_contents)
+  File "/home/rowaha/work/llm-fl/BugsInPy/framework/bin/temp/black/black.py", line 681, in lib2to3_parse
+    raise exc from None
+ValueError: Cannot parse: 4:16:     return (i*2 async for i in arange(42))
+
+----------------------------------------------------------------------
+Ran 1 test in 0.005s
+
+FAILED (errors=1)

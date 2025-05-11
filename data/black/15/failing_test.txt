@@ -1,0 +1,150 @@
+Expected tree:
+file_input
+  simple_stmt
+    import_name
+      NAME 'import'
+      NAME ' ' 'pytest'
+    /import_name
+    NEWLINE '\n'
+  /simple_stmt
+  decorated
+    decorator
+      AT '\n# fmt: off\n\n' '@'
+      dotted_name
+        NAME 'pytest'
+        DOT '.'
+        NAME 'mark'
+        DOT '.'
+        NAME 'parametrize'
+      /dotted_name
+      LPAR '('
+      arglist
+        STRING "'test'"
+        COMMA ','
+        atom
+          LSQB ' ' '['
+          listmaker
+            atom
+              LSQB "\n    # Test don't manage the volume\n    " '['
+              RSQB ']'
+            /atom
+            COMMA ','
+          /listmaker
+          RSQB '\n' ']'
+        /atom
+      /arglist
+      RPAR ')'
+      NEWLINE '\n'
+    /decorator
+    funcdef
+      NAME 'def'
+      NAME ' ' 'test_fader'
+      parameters
+        LPAR '('
+        NAME 'test'
+        RPAR ')'
+      /parameters
+      COLON ':'
+      suite
+        NEWLINE '\n'
+        INDENT '    '
+        simple_stmt
+          NAME 'pass'
+          NEWLINE '\n'
+        /simple_stmt
+        DEDENT ''
+      /suite
+    /funcdef
+  /decorated
+  ENDMARKER '\n# fmt: on\n' ''
+/file_input
+Actual tree:
+file_input
+  simple_stmt
+    import_name
+      NAME 'import'
+      NAME ' ' 'pytest'
+    /import_name
+    NEWLINE '\n'
+  /simple_stmt
+  decorated
+    decorator
+      AT '\n# fmt: off\n\n' '@'
+      dotted_name
+        NAME 'pytest'
+        DOT '.'
+        NAME 'mark'
+        DOT '.'
+        NAME 'parametrize'
+      /dotted_name
+      LPAR '('
+      arglist
+        STRING "'test'"
+        COMMA ','
+        atom
+          LSQB ' ' '['
+          listmaker
+            atom
+              LSQB "\n    # Test don't manage the volume\n    " '['
+              RSQB ']'
+            /atom
+            COMMA ','
+          /listmaker
+          RSQB '\n' ']'
+        /atom
+      /arglist
+      RPAR ')'
+      NEWLINE '\n'
+    /decorator
+    funcdef
+      NAME 'def'
+      NAME ' ' 'test_fader'
+      parameters
+        LPAR '('
+        NAME 'test'
+        RPAR ')'
+      /parameters
+      COLON ':'
+      suite
+        NEWLINE '\n'
+        INDENT '    '
+        simple_stmt
+          NAME 'pass'
+          NEWLINE '\n'
+        /simple_stmt
+        DEDENT ''
+      /suite
+    /funcdef
+  /decorated
+  ENDMARKER '\n\n# fmt: on\n' ''
+/file_input
+======================================================================
+FAIL: test_fmtonoff2 (tests.test_black.BlackTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rowaha/.pyenv/versions/3.8.20/lib/python3.8/unittest/mock.py", line 1325, in patched
+    return func(*newargs, **newkeywargs)
+  File "/home/rowaha/work/llm-fl/BugsInPy/framework/bin/temp/black/tests/test_black.py", line 407, in test_fmtonoff2
+    self.assertFormatEqual(expected, actual)
+  File "/home/rowaha/work/llm-fl/BugsInPy/framework/bin/temp/black/tests/test_black.py", line 122, in assertFormatEqual
+    self.assertEqual(expected, actual)
+AssertionError: "impo[98 chars]n    [],\n])\ndef test_fader(test):\n    pass\n\n# fmt: on\n" != "impo[98 chars]n    [],\n])\ndef test_fader(test):\n    pass\n\n\n# fmt: on\n"
+  import pytest
+  
+  # fmt: off
+  
+  @pytest.mark.parametrize('test', [
+      # Test don't manage the volume
+      [],
+  ])
+  def test_fader(test):
+      pass
+  
++ 
+  # fmt: on
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.032s
+
+FAILED (failures=1)

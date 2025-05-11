@@ -1,0 +1,85 @@
+Expected tree:
+file_input
+  async_stmt
+    ASYNC 'async'
+    funcdef
+      NAME ' ' 'def'
+      NAME ' ' 'func'
+      parameters
+        LPAR '('
+        RPAR ')'
+      /parameters
+      RARROW ' ' '->'
+      NAME ' ' 'int'
+      COLON ':'
+      suite
+        NEWLINE '\n'
+        INDENT ''
+        simple_stmt
+          return_stmt
+            NAME '    ' 'return'
+            NUMBER ' ' '0'
+          /return_stmt
+          NEWLINE '\n'
+        /simple_stmt
+        DEDENT ''
+      /suite
+    /funcdef
+  /async_stmt
+  ENDMARKER ''
+/file_input
+Actual tree:
+file_input
+  async_stmt
+    ASYNC 'async'
+    funcdef
+      NAME ' ' 'def'
+      NAME ' ' 'func'
+      parameters
+        LPAR '('
+        RPAR ')'
+      /parameters
+      RARROW ' ' '->'
+      atom
+        LPAR ' ' '('
+        NAME 'int'
+        RPAR ')'
+      /atom
+      COLON ':'
+      suite
+        NEWLINE '\n'
+        INDENT ''
+        simple_stmt
+          return_stmt
+            NAME '    ' 'return'
+            NUMBER ' ' '0'
+          /return_stmt
+          NEWLINE '\n'
+        /simple_stmt
+        DEDENT ''
+      /suite
+    /funcdef
+  /async_stmt
+  ENDMARKER ''
+/file_input
+======================================================================
+FAIL: test_async_as_identifier (tests.test_black.BlackTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rowaha/.pyenv/versions/3.8.20/lib/python3.8/unittest/mock.py", line 1325, in patched
+    return func(*newargs, **newkeywargs)
+  File "/home/rowaha/work/llm-fl/BugsInPy/framework/bin/temp/black/tests/test_black.py", line 510, in test_async_as_identifier
+    self.assertFormatEqual(expected, actual)
+  File "/home/rowaha/work/llm-fl/BugsInPy/framework/bin/temp/black/tests/test_black.py", line 159, in assertFormatEqual
+    self.assertEqual(expected, actual)
+AssertionError: 'async def func() -> int:\n    return 0\n' != 'async def func() -> (int):\n    return 0\n'
+- async def func() -> int:
++ async def func() -> (int):
+?                     +   +
+      return 0
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.019s
+
+FAILED (failures=1)

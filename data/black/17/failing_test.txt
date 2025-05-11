@@ -1,0 +1,18 @@
+======================================================================
+ERROR: test_empty (tests.test_black.BlackTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rowaha/.pyenv/versions/3.8.20/lib/python3.8/unittest/mock.py", line 1325, in patched
+    return func(*newargs, **newkeywargs)
+  File "/home/rowaha/work/llm-fl/BugsInPy/framework/bin/temp/black/tests/test_black.py", line 106, in test_empty
+    actual = fs(source)
+  File "/home/rowaha/work/llm-fl/BugsInPy/framework/bin/temp/black/black.py", line 577, in format_str
+    src_node = lib2to3_parse(src_contents)
+  File "/home/rowaha/work/llm-fl/BugsInPy/framework/bin/temp/black/black.py", line 626, in lib2to3_parse
+    if src_txt[-1] != "\n":
+IndexError: string index out of range
+
+----------------------------------------------------------------------
+Ran 1 test in 0.002s
+
+FAILED (errors=1)

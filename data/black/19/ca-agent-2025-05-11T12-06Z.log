@@ -1,0 +1,216 @@
+agent=Coverage Analyzer Agent started
+agent=Coverage Analyzer Agent ended with output:
+<analysis>
+1. The file contains multiple imports and many class/function definitions.
+2. We need to keep all imports as per restrictions.
+3. From the definitions_to_examine list, we need to preserve:
+   - format_str()
+   - format_file_contents()
+4. All other definitions should be removed while preserving imports.
+5. The file ends with an if __name__ == "__main__" block which should be kept.
+</analysis>
+
+<file_content>
+#!/usr/bin/env python3
+
+import asyncio
+import pickle
+from asyncio.base_events import BaseEventLoop
+from concurrent.futures import Executor, ProcessPoolExecutor
+from enum import Enum
+from functools import partial, wraps
+import keyword
+import logging
+from multiprocessing import Manager
+import os
+from pathlib import Path
+import re
+import tokenize
+import signal
+import sys
+from typing import (
+    Any,
+    Callable,
+    Collection,
+    Dict,
+    Generic,
+    Iterable,
+    Iterator,
+    List,
+    Optional,
+    Pattern,
+    Set,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+)
+
+from appdirs import user_cache_dir
+from attr import dataclass, Factory
+import click
+
+# lib2to3 fork
+from blib2to3.pytree import Node, Leaf, type_repr
+from blib2to3 import pygram, pytree
+from blib2to3.pgen2 import driver, token
+from blib2to3.pgen2.parse import ParseError
+
+def format_file_contents(
+    src_contents: str, line_length: int, fast: bool
+) -> FileContent:
+    """Reformat contents a file and return new contents.
+
+    If `fast` is False, additionally confirm that the reformatted code is
+    valid by calling :func:`assert_equivalent` and :func:`assert_stable` on it.
+    `line_length` is passed to :func:`format_str`.
+    """
+
+def format_str(src_contents: str, line_length: int) -> FileContent:
+    """Reformat a string and return new contents.
+
+    `line_length` determines how many characters per line are allowed.
+    """
+    src_node = lib2to3_parse(src_contents)
+    dst_contents = ""
+    lines = LineGenerator()
+    elt = EmptyLineTracker()
+    py36 = is_python36(src_node)
+    empty_line = Line()
+    after = 0
+    for current_line in lines.visit(src_node):
+        for _ in range(after):
+        before, after = elt.maybe_empty_lines(current_line)
+        for _ in range(before):
+            dst_contents += str(empty_line)
+        for line in split_line(current_line, line_length=line_length, py36=py36):
+            dst_contents += str(line)
+    return dst_contents
+
+if __name__ == "__main__":
+</file_content>
+agent=Coverage Analyzer Agent started
+agent=Coverage Analyzer Agent ended with output:
+<analysis>
+The task is to shorten the given Python file by keeping only the import statements and the requested definition ('EmptyLineTracker'). All other code should be removed.
+</analysis>
+
+<file_content>
+#!/usr/bin/env python3
+
+import asyncio
+import pickle
+from asyncio.base_events import BaseEventLoop
+from concurrent.futures import Executor, ProcessPoolExecutor
+from enum import Enum
+from functools import partial, wraps
+import keyword
+import logging
+from multiprocessing import Manager
+import os
+from pathlib import Path
+import re
+import tokenize
+import signal
+import sys
+from typing import (
+    Any,
+    Callable,
+    Collection,
+    Dict,
+    Generic,
+    Iterable,
+    Iterator,
+    List,
+    Optional,
+    Pattern,
+    Set,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+)
+
+from appdirs import user_cache_dir
+from attr import dataclass, Factory
+import click
+
+# lib2to3 fork
+from blib2to3.pytree import Node, Leaf, type_repr
+from blib2to3 import pygram, pytree
+from blib2to3.pgen2 import driver, token
+from blib2to3.pgen2.parse import ParseError
+
+@dataclass
+class EmptyLineTracker:
+    """Provides a stateful method that returns the number of potential extra
+    empty lines needed before and after the currently processed line.
+
+    Note: this tracker works on lines that haven't been split yet.  It assumes
+    the prefix of the first leaf consists of optional newlines.  Those newlines
+    are consumed by `maybe_empty_lines()` and included in the computation.
+    """
+    previous_line: Optional[Line] = None
+    previous_after: int = 0
+    previous_defs: List[int] = Factory(list)
+
+    def maybe_empty_lines(self, current_line: Line) -> Tuple[int, int]:
+        """Return the number of extra empty lines before and after the `current_line`.
+
+        This is for separating `def`, `async def` and `class` with extra empty
+        lines (two on module-level), as well as providing an extra empty line
+        after flow control keywords to make them more prominent.
+        """
+        if isinstance(current_line, UnformattedLines):
+
+        before, after = self._maybe_empty_lines(current_line)
+        before -= self.previous_after
+        self.previous_after = after
+        self.previous_line = current_line
+        return before, after
+
+    def _maybe_empty_lines(self, current_line: Line) -> Tuple[int, int]:
+        max_allowed = 1
+        if current_line.depth == 0:
+            max_allowed = 2
+        if current_line.leaves:
+            # Consume the first leaf's extra newlines.
+            first_leaf = current_line.leaves[0]
+            before = first_leaf.prefix.count("\n")
+            before = min(before, max_allowed)
+            first_leaf.prefix = ""
+        depth = current_line.depth
+        while self.previous_defs and self.previous_defs[-1] >= depth:
+        is_decorator = current_line.is_decorator
+        if is_decorator or current_line.is_def or current_line.is_class:
+            if not is_decorator:
+                self.previous_defs.append(depth)
+            if self.previous_line is None:
+                # Don't insert empty lines before the first line in the file.
+                return 0, 0
+
+            if self.previous_line and self.previous_line.is_decorator:
+                # Don't insert empty lines between decorators.
+                return 0, 0
+
+            newlines = 2
+            if current_line.depth:
+            return newlines, 0
+
+        if current_line.is_flow_control:
+
+        if (
+            self.previous_line
+            and self.previous_line.is_import
+            and not current_line.is_import
+            and depth == self.previous_line.depth
+        ):
+
+        if (
+            self.previous_line
+            and self.previous_line.is_yield
+            and (not current_line.is_yield or depth != self.previous_line.depth)
+        ):
+
+        return before, 0
+</file_content>

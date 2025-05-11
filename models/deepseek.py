@@ -7,6 +7,14 @@ deepseek_chat_model = OpenAIChatCompletionsModel(
         base_url="https://api.deepseek.com", api_key=os.getenv("DEEPSEEK_API_KEY"))
 )
 
+deepseek_reasoner_model_id = 'deepseek-reasoner'
+deepseek_reasoner_model = OpenAIChatCompletionsModel(
+    model=deepseek_reasoner_model_id,
+    openai_client=AsyncOpenAI(
+        base_url="https://api.deepseek.com", api_key=os.getenv("DEEPSEEK_API_KEY"))
+)
+
+
 deepseek_r1_model_id = 'MFDoom/deepseek-r1-tool-calling:7b'
 deepseek_r1_model = OpenAIChatCompletionsModel(
     model=deepseek_r1_model_id,

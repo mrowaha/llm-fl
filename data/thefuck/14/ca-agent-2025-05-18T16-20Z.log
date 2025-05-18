@@ -1,0 +1,48 @@
+agent=Coverage Analyzer Agent started
+agent=Coverage Analyzer Agent ended with output:
+<file_content>
+from difflib import get_close_matches
+from thefuck.utils import get_all_executables, \
+    get_valid_history_without_current, get_closest
+from thefuck.specific.sudo import sudo_support
+
+
+@sudo_support
+def match(command):
+    pass
+
+
+def _get_used_executables(command):
+    pass
+
+
+@sudo_support
+def get_new_command(command):
+    pass
+
+
+priority = 3000
+</file_content>
+agent=Coverage Analyzer Agent started
+agent=Coverage Analyzer Agent ended with output:
+<file_content>
+import os
+import pickle
+import pkg_resources
+import re
+import shelve
+import six
+from .conf import settings
+from contextlib import closing
+from decorator import decorator
+from difflib import get_close_matches
+from functools import wraps
+from inspect import getargspec
+try:
+    from pathlib import Path
+from warnings import warn
+
+@memoize
+def which(program):
+    """Returns `program` path or `None`."""
+</file_content>

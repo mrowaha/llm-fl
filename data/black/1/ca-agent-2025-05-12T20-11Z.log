@@ -1,0 +1,82 @@
+agent=Coverage Analyzer Agent started
+agent=Coverage Analyzer Agent ended with output:
+<file_content>
+#!/usr/bin/env python3
+import asyncio
+import logging
+from concurrent.futures import ThreadPoolExecutor
+from contextlib import contextmanager
+from functools import partial
+from io import BytesIO, TextIOWrapper
+import os
+from pathlib import Path
+import regex as re
+import sys
+from tempfile import TemporaryDirectory
+from typing import Any, BinaryIO, Generator, List, Tuple, Iterator, TypeVar
+import unittest
+from unittest.mock import patch, MagicMock
+
+from click import unstyle
+from click.testing import CliRunner
+
+import black
+from black import Feature, TargetVersion
+
+try:
+    import blackd
+    from aiohttp.test_utils import AioHTTPTestCase, unittest_run_loop
+    from aiohttp import web
+else:
+    has_blackd_deps = True
+
+from pathspec import PathSpec
+
+ff = partial(black.format_file_in_place, mode=black.FileMode(), fast=True)
+fs = partial(black.format_str, mode=black.FileMode())
+THIS_FILE = Path(__file__)
+THIS_DIR = THIS_FILE.parent
+DETERMINISTIC_HEADER = "[Deterministic header]"
+EMPTY_LINE = "# EMPTY LINE WITH WHITESPACE" + " (this comment will be removed)"
+PY36_ARGS = [
+    f"--target-version={version.name.lower()}" for version in black.PY36_VERSIONS
+]
+T = TypeVar("T")
+R = TypeVar("R")
+
+
+class BlackRunner(CliRunner):
+    """Modify CliRunner so that stderr is not merged with stdout.
+
+    This is a hack that can be removed once we depend on Click 7.x"""
+
+    def __init__(self) -> None:
+        self.stderrbuf = BytesIO()
+        self.stdoutbuf = BytesIO()
+        self.stdout_bytes = b""
+        self.stderr_bytes = b""
+        super().__init__()
+
+    @contextmanager
+    def isolation(self, *args: Any, **kwargs: Any) -> Generator[BinaryIO, None, None]:
+        with super().isolation(*args, **kwargs) as output:
+            try:
+                hold_stderr = sys.stderr
+                sys.stderr = TextIOWrapper(self.stderrbuf, encoding=self.charset)
+                yield output
+            finally:
+                self.stdout_bytes = sys.stdout.buffer.getvalue()  # type: ignore
+                self.stderr_bytes = sys.stderr.buffer.getvalue()  # type: ignore
+                sys.stderr = hold_stderr
+
+
+class BlackTestCase(unittest.TestCase):
+    def invokeBlack(
+        self, args: List[str], exit_code: int = 0, ignore_config: bool = True
+    ) -> None:
+        runner = BlackRunner()
+        if ignore_config:
+            args = ["--config", str(THIS_DIR / "empty.toml"), *args]
+        result = runner.invoke(black.main, args)
+        self.assertEqual(result.exit_code, exit_code, msg=runner.stderr_bytes.decode())
+</file_content>

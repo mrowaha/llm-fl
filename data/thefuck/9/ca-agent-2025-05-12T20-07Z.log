@@ -1,0 +1,12 @@
+agent=Coverage Analyzer Agent started
+agent=Coverage Analyzer Agent ended with output:
+<file_content>
+import subprocess
+import re
+from thefuck.specific.sudo import sudo_support
+from thefuck.utils import for_app, replace_command
+from thefuck.specific.dnf import dnf_available
+
+
+regex = re.compile(r'No such command: (.*)\.')
+</file_content>

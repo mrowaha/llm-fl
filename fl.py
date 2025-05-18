@@ -1,3 +1,4 @@
+import time
 import sys
 import os
 
@@ -102,4 +103,7 @@ async def main():
         print("\n\n=== Run complete ===")
 
 if __name__ == "__main__":
+    start = time.perf_counter()          # high-resolution timer
     asyncio.run(main())
+    elapsed = time.perf_counter() - start
+    print(f"\nMain finished in {elapsed:.3f} seconds")

@@ -1,0 +1,129 @@
+agent=Coverage Analyzer Agent started
+agent=Coverage Analyzer Agent ended with output:
+<file_content>
+import asyncio
+from asyncio.base_events import BaseEventLoop
+from concurrent.futures import Executor, ProcessPoolExecutor
+from datetime import datetime
+from enum import Enum, Flag
+from functools import lru_cache, partial, wraps
+import io
+import keyword
+import logging
+from multiprocessing import Manager
+import os
+from pathlib import Path
+import pickle
+import re
+import signal
+import sys
+import tokenize
+from typing import (
+    Any,
+    Callable,
+    Collection,
+    Dict,
+    Generic,
+    Iterable,
+    Iterator,
+    List,
+    Optional,
+    Pattern,
+    Sequence,
+    Set,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+    cast,
+)
+
+from appdirs import user_cache_dir
+from attr import dataclass, Factory
+import click
+import toml
+
+# lib2to3 fork
+from blib2to3.pytree import Node, Leaf, type_repr
+from blib2to3 import pygram, pytree
+from blib2to3.pgen2 import driver, token
+from blib2to3.pgen2.parse import ParseError
+
+
+__version__ = "18.6b2"
+DEFAULT_LINE_LENGTH = 88
+DEFAULT_EXCLUDES = (
+    r"/(\.git|\.hg|\.mypy_cache|\.tox|\.venv|_build|buck-out|build|dist)/"
+)
+DEFAULT_INCLUDES = r"\.pyi?$"
+CACHE_DIR = Path(user_cache_dir("black", version=__version__))
+
+
+# types
+FileContent = str
+Encoding = str
+NewLine = str
+Depth = int
+NodeType = int
+LeafID = int
+Priority = int
+Index = int
+LN = Union[Leaf, Node]
+SplitFunc = Callable[["Line", bool], Iterator["Line"]]
+Timestamp = float
+FileSize = int
+CacheInfo = Tuple[Timestamp, FileSize]
+Cache = Dict[Path, CacheInfo]
+out = partial(click.secho, bold=True, err=True)
+err = partial(click.secho, fg="red", err=True)
+
+pygram.initialize(CACHE_DIR)
+syms = pygram.python_symbols
+
+
+def format_file_contents(
+    src_contents: str,
+    *,
+    line_length: int,
+    fast: bool,
+    mode: FileMode = FileMode.AUTO_DETECT,
+) -> FileContent:
+    """Reformat contents a file and return new contents.
+
+    If `fast` is False, additionally confirm that the reformatted code is
+    valid by calling :func:`assert_equivalent` and :func:`assert_stable` on it.
+    `line_length` is passed to :func:`format_str`.
+    """
+
+
+def format_str(
+    src_contents: str, line_length: int, *, mode: FileMode = FileMode.AUTO_DETECT
+) -> FileContent:
+    """Reformat a string and return new contents.
+
+    `line_length` determines how many characters per line are allowed.
+    """
+    src_node = lib2to3_parse(src_contents)
+    dst_contents = ""
+    future_imports = get_future_imports(src_node)
+    is_pyi = bool(mode & FileMode.PYI)
+    py36 = bool(mode & FileMode.PYTHON36) or is_python36(src_node)
+    normalize_strings = not bool(mode & FileMode.NO_STRING_NORMALIZATION)
+    normalize_fmt_off(src_node)
+    lines = LineGenerator(
+        remove_u_prefix=py36 or "unicode_literals" in future_imports,
+        is_pyi=is_pyi,
+        normalize_strings=normalize_strings,
+    )
+    elt = EmptyLineTracker(is_pyi=is_pyi)
+    empty_line = Line()
+    after = 0
+    for current_line in lines.visit(src_node):
+        for _ in range(after):
+        before, after = elt.maybe_empty_lines(current_line)
+        for _ in range(before):
+            dst_contents += str(empty_line)
+        for line in split_line(current_line, line_length=line_length, py36=py36):
+            dst_contents += str(line)
+    return dst_contents
+</file_content>

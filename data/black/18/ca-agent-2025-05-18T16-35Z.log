@@ -1,0 +1,61 @@
+agent=Coverage Analyzer Agent started
+agent=Coverage Analyzer Agent ended with output:
+<file_content>
+import asyncio
+import pickle
+from asyncio.base_events import BaseEventLoop
+from concurrent.futures import Executor, ProcessPoolExecutor
+from enum import Enum, Flag
+from functools import partial, wraps
+import keyword
+import logging
+from multiprocessing import Manager
+import os
+from pathlib import Path
+import re
+import tokenize
+import signal
+import sys
+from typing import (
+    Any,
+    Callable,
+    Collection,
+    Dict,
+    Generic,
+    Iterable,
+    Iterator,
+    List,
+    Optional,
+    Pattern,
+    Sequence,
+    Set,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+    cast,
+)
+
+from appdirs import user_cache_dir
+from attr import dataclass, Factory
+import click
+
+# lib2to3 fork
+from blib2to3.pytree import Node, Leaf, type_repr
+from blib2to3 import pygram, pytree
+from blib2to3.pgen2 import driver, token
+from blib2to3.pgen2.parse import ParseError
+
+
+__version__ = "18.5b1"
+DEFAULT_LINE_LENGTH = 88
+DEFAULT_EXCLUDES = (
+    r"/(\.git|\.hg|\.mypy_cache|\.tox|\.venv|_build|buck-out|build|dist)/"
+)
+DEFAULT_INCLUDES = r"\.pyi?$"
+CACHE_DIR = Path(user_cache_dir("black", version=__version__))
+
+
+def preserve_line_endings():
+    pass
+</file_content>

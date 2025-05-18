@@ -1,0 +1,109 @@
+agent=Coverage Analyzer Agent started
+agent=Coverage Analyzer Agent ended with output:
+<file_content>
+import asyncio
+from asyncio.base_events import BaseEventLoop
+from concurrent.futures import Executor, ProcessPoolExecutor
+from datetime import datetime
+from enum import Enum, Flag
+from functools import lru_cache, partial, wraps
+import io
+import keyword
+import logging
+from multiprocessing import Manager
+import os
+from pathlib import Path
+import pickle
+import re
+import signal
+import sys
+import tokenize
+from typing import (
+    Any,
+    Callable,
+    Collection,
+    Dict,
+    Generator,
+    Generic,
+    Iterable,
+    Iterator,
+    List,
+    Optional,
+    Pattern,
+    Sequence,
+    Set,
+    Tuple,
+    TypeVar,
+    Union,
+    cast,
+)
+
+from appdirs import user_cache_dir
+from attr import dataclass, Factory
+import click
+import toml
+
+# lib2to3 fork
+from blib2to3.pytree import Node, Leaf, type_repr
+from blib2to3 import pygram, pytree
+from blib2to3.pgen2 import driver, token
+from blib2to3.pgen2.parse import ParseError
+
+
+__version__ = "18.6b4"
+DEFAULT_LINE_LENGTH = 88
+DEFAULT_EXCLUDES = (
+    r"/(\.git|\.hg|\.mypy_cache|\.tox|\.venv|_build|buck-out|build|dist)/"
+)
+DEFAULT_INCLUDES = r"\.pyi?$"
+CACHE_DIR = Path(user_cache_dir("black", version=__version__))
+
+
+@dataclass
+class BracketTracker:
+    """Keeps track of brackets on a line."""
+
+    depth: int = 0
+    bracket_match: Dict[Tuple[Depth, NodeType], Leaf] = Factory(dict)
+    delimiters: Dict[LeafID, Priority] = Factory(dict)
+    previous: Optional[Leaf] = None
+    _for_loop_variable: int = 0
+    _lambda_arguments: int = 0
+
+    def mark(self, leaf: Leaf) -> None:
+        """Mark `leaf` with bracket-related metadata. Keep track of delimiters.
+
+        All leaves receive an int `bracket_depth` field that stores how deep
+        within brackets a given leaf is. 0 means there are no enclosing brackets
+        that started on this line.
+
+        If a leaf is itself a closing bracket, it receives an `opening_bracket`
+        field that it forms a pair with. This is a one-directional link to
+        avoid reference cycles.
+
+        If a leaf is a delimiter (a token on which Black can split the line if
+        needed) and it's on depth 0, its `id()` is stored in the tracker's
+        `delimiters` field.
+        """
+        if leaf.type == token.COMMENT:
+
+        self.maybe_decrement_after_for_loop_variable(leaf)
+        self.maybe_decrement_after_lambda_arguments(leaf)
+        if leaf.type in CLOSING_BRACKETS:
+            self.depth -= 1
+            opening_bracket = self.bracket_match.pop((self.depth, leaf.type))
+            leaf.opening_bracket = opening_bracket
+        leaf.bracket_depth = self.depth
+        if self.depth == 0:
+            delim = is_split_before_delimiter(leaf, self.previous)
+            if delim and self.previous is not None:
+            else:
+                delim = is_split_after_delimiter(leaf, self.previous)
+                if delim:
+        if leaf.type in OPENING_BRACKETS:
+            self.bracket_match[self.depth, BRACKET[leaf.type]] = leaf
+            self.depth += 1
+        self.previous = leaf
+        self.maybe_increment_lambda_arguments(leaf)
+        self.maybe_increment_for_loop_variable(leaf)
+</file_content>

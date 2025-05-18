@@ -1,5 +1,0 @@
--> failing test generation
-the following steps were used to generate the failing test
-source ./env/bin/activate
-pytest tests/rules/test_pip_unknown_command.py::test_get_new_command -l
-
